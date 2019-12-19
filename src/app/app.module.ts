@@ -6,13 +6,13 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { BLE } from '@ionic-native/ble';
 
 import { DuuuApp } from './app.component';
-import { HomePage } from '../pages/home/home';
+import { ConnectionPage } from '../pages/connection/connection';
 import { DetailPage } from '../pages/detail/detail';
 
 @NgModule({
   declarations: [
     DuuuApp,
-    HomePage,
+    ConnectionPage,
     DetailPage
   ],
   imports: [
@@ -22,7 +22,7 @@ import { DetailPage } from '../pages/detail/detail';
   bootstrap: [IonicApp],
   entryComponents: [
     DuuuApp,
-    HomePage,
+    ConnectionPage,
     DetailPage
   ],
   providers: [

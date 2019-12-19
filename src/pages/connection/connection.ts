@@ -7,10 +7,10 @@ import { DetailPage } from '../detail/detail';
 const NEOPIXEL_SERVICE = 'ccc0';
 
 @Component({
-  selector: 'page-home',
-  templateUrl: 'home.html'
+  selector: 'page-connection',
+  templateUrl: 'connection.html'
 })
-export class HomePage {
+export class ConnectionPage {
   
   devices: any[] = [];
   statusMessage: string;
@@ -65,5 +65,4 @@ export class HomePage {
     });
     alert.present();
   }
-
 }
