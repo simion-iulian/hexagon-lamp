@@ -5,23 +5,23 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { BLE } from '@ionic-native/ble';
 
-import { MyApp } from './app.component';
+import { DuuuApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { DetailPage } from '../pages/detail/detail';
 
 @NgModule({
   declarations: [
-    MyApp,
+    DuuuApp,
     HomePage,
     DetailPage
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(DuuuApp)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
+    DuuuApp,
     HomePage,
     DetailPage
   ],
