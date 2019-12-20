@@ -1,21 +1,21 @@
 page-connection {
-    .background-image {
-        --background: url("./assets/connection-background.png");
-        --background-repeat: no-repeat;
-        --background-size: cover;
-    }
-    .bg-color2{
-        --background: red;
-    }
-    .background-color{
-        background: color($colors, red-slider-bg);
-      }
-    .transparent-bg{
-        background-color: rgba(0,0,0,0);
-    }
-    
-    .toolbar-background-md{
+    .transparent-bg {
         background-color: rgba(0,0,0,0);
     }
 
+    // Overriding Android specific items to have transparent background
+    .toolbar-background-md {
+        background-color: rgba(0,0,0,0);
+    }
+
+    .item-md {
+        background-color: rgba(0,0,0,0);
+    }
+
+    .connection-bg {
+        background-image: url('../assets/img/connection-bg.png'); 
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+    }
 }
