@@ -56,9 +56,9 @@ $colors: (
   red-slider-bg: rgb(50, 3, 3),
   green-slider-bg: rgb(3,50,3),
   blue-slider-bg: rgb(3,3,50),
-  brightness-slider-bg: rgb(32,32,32)
+  brightness-slider-bg: rgb(32,32,32),
+  transparent-bg-color: rgba(0,0,0,0)
 );
-
 
 
 
@@ -73,6 +73,7 @@ $colors: (
 // --------------------------------------------------
 // Material Design only Sass variables can go here
 
+$toolbar-background-md: color($colors, transparent-bg-color);
 
 
 

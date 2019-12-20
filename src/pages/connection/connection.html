@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header >
   <ion-navbar>
     <ion-title>
       Connect to the Heks
@@ -11,7 +11,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="background-color">
    <ion-list> 
     <button ion-item *ngFor="let device of devices" (click)="deviceSelected(device)">
       <h1>{{ device.name || 'Unnamed' }}</h1>
@@ -20,10 +20,4 @@
     </button>  
    </ion-list> 
 </ion-content>
-
-<ion-footer>
-  <ion-toolbar>
-    <p>{{ statusMessage }}</p>
-  </ion-toolbar>
-</ion-footer>
 

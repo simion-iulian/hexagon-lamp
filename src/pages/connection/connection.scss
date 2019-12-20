@@ -1,4 +1,21 @@
-page-connection
- {
+page-connection {
+    .background-image {
+        --background: url("./assets/connection-background.png");
+        --background-repeat: no-repeat;
+        --background-size: cover;
+    }
+    .bg-color2{
+        --background: red;
+    }
+    .background-color{
+        background: color($colors, red-slider-bg);
+      }
+    .transparent-bg{
+        background-color: rgba(0,0,0,0);
+    }
+    
+    .toolbar-background-md{
+        background-color: rgba(0,0,0,0);
+    }
 
 }
