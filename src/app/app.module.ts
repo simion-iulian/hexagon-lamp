@@ -8,6 +8,7 @@ import { BLE } from '@ionic-native/ble';
 import { DuuuApp } from './app.component';
 import { ConnectionPage } from '../pages/connection/connection';
 import { DetailPage } from '../pages/detail/detail';
+import { ColorSliderModule } from 'ngx-color/slider';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { DetailPage } from '../pages/detail/detail';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(DuuuApp)
+    IonicModule.forRoot(DuuuApp),
+    ColorSliderModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

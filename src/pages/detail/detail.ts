@@ -20,13 +20,14 @@ export class DetailPage {
   red: number;
   green: number;
   blue: number;
+  white: number;
   brightness: number;
   pattern: number;
   speed: number;
   power: boolean;
 
   constructor(public navCtrl: NavController, 
-              public navParams: NavParams, 
+              public navParams: NavParams,
               private ble: BLE,
               private toastCtrl: ToastController,
               private ngZone: NgZone) {
@@ -51,6 +52,7 @@ export class DetailPage {
           this.red = data[0];
           this.green = data[1];
           this.blue = data[2];
+          this.white = data[3];
         });
       }
     );
@@ -105,7 +107,8 @@ export class DetailPage {
   setColor(event){
 
     console.log('setColor');
-    let data = new Uint8Array([this.red, this.green, this.blue]);
+    console.log(event);
+    let data = new Uint8Array([this.red, this.green, this.blue, this.white]);
     console.log("Updating color to: "  + data)
     this.ble.write(this.peripheral.id, NEOPIXEL_SERVICE, COLOR, data.buffer).then(
       () => console.log('Updated color'),

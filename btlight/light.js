@@ -1,14 +1,15 @@
 const bleno = require('bleno');
-const ws281x = require('rpi-ws281x-native');
+const ws281x = require('rpi-sk6812');
 
 
 let lampState = {
-"name":"Hexagon",
-"strip_length":240,
+"name":"Heks",
+"strip_length":96, 
 	"settings":{
-		"r":181,
-		"g":102,
-		"b":56,
+		"r":0,
+		"g":0,
+    "b":0,
+    "w":100,
 		"pattern":1,
 		"power":0,
 		"brightness":226
@@ -26,15 +27,22 @@ console.log(JSON.stringify(lampState))
 
 var NUM_LEDS = lampState.strip_length, 
    pixelData = new Uint32Array(NUM_LEDS);
-ws281x.init(NUM_LEDS);
+
+const config =
+{"leds" : 96,
+"brightness" : 255,
+"strip" : 'grbw' }
+
+ws281x.configure(config);
 
 const lampName = lampState.name;
  r = lampState.settings.r;
  g = lampState.settings.g;
  b = lampState.settings.b;
+ w = lampState.settings.w;
  patternState = lampState.settings.pattern;
  switchState = lampState.settings.power;
- bright = lampState.settings.brightness;
+//  bright = lampState.settings.brightness;
 
 // ---- trap the SIGINT and reset before exit
 // TODO: forgot to close the bluetooth when I close the app. Better to clean-up that connection too
@@ -51,7 +59,7 @@ function loadState(){
   b = lampState.settings.b;
   patternState = lampState.settings.pattern;
   switchState = lampState.settings.power;
-  bright = lampState.settings.brightness;
+  // bright = lampState.settings.brightness;
   if(switchState == 1) {
     for(var i = 0; i<NUM_LEDS;i++)
       pixelData[i] = rgb2Int(r,g,b);
@@ -60,7 +68,7 @@ function loadState(){
     for(var i = 0; i<NUM_LEDS;i++)
     pixelData[i] = 0x000000;
   }
-  ws281x.setBrightness(bright);
+  // ws281x.setBrightness(bright);
   ws281x.render(pixelData);
 }
 
@@ -72,7 +80,7 @@ function saveState(){
   lampState.settings.b = b;
   lampState.settings.pattern = patternState;
   lampState.settings.power = switchState;
-  lampState.settings.brightness = bright;
+  // lampState.settings.brightness = bright;
 }
 
 // Bluetooth service/characteristic things
@@ -165,11 +173,11 @@ class ColorCharacteristic extends bleno.Characteristic {
       this.name = name;
   }
   onWriteRequest(data, offset, withoutResponse, callback) {
-    // console.log("["+data[0]+"]["+data[1]+"]["+data[2]+"]");
+     console.log("["+data[0]+"]["+data[1]+"]["+data[2]+"]["+data[3]+"]");
 
     try {
       data = new Uint16Array(data)
-      if(data.length != 3) {
+      if(data.length != 4) {
           callback(this.RESULT_INVALID_ATTRIBUTE_LENGTH);
           return;
       }
@@ -179,8 +187,9 @@ class ColorCharacteristic extends bleno.Characteristic {
       for(var i = 0; i<NUM_LEDS;i++){
         r = data[0];
         g = data[1];
-        b = data[2]
-        pixelData[i] = rgb2Int(r,g,b);
+        b = data[2];
+        w = data[3];
+        pixelData[i] = rgbw2Int(r,g,b,w);
       }
       ws281x.render(pixelData);
       saveState();
@@ -226,7 +235,7 @@ class BrightnessCharacteristic extends bleno.Characteristic {
           this.argument = data.readUInt8();
           bright = this.argument;
           console.log(`${this.name} is now ${this.argument}`);
-          ws281x.setBrightness(this.argument);
+          // ws281x.setBrightness(this.argument);
           ws281x.render(pixelData);
           saveState();
           callback(this.RESULT_SUCCESS);
@@ -384,4 +393,11 @@ function colorwheel(pos) {
 
 function rgb2Int(r, g, b) {
   return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+}
+
+function rgbw2Int(r, g, b, w) {
+  return ((w & 0xff) << 24) + 
+         ((r & 0xff) << 16) + 
+         ((g & 0xff) << 8) + 
+         (b & 0xff);
 }
