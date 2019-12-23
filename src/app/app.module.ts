@@ -8,18 +8,18 @@ import { BLE } from '@ionic-native/ble';
 import { DuuuApp } from './app.component';
 import { ConnectionPage } from '../pages/connection/connection';
 import { DetailPage } from '../pages/detail/detail';
-import { ColorSliderModule } from 'ngx-color/slider';
+import { HoneycombColorPicker } from '../components/honeycomb-color-picker/honeycomb-color-picker';
 
 @NgModule({
   declarations: [
     DuuuApp,
     ConnectionPage,
-    DetailPage
+    DetailPage,
+    HoneycombColorPicker
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(DuuuApp),
-    ColorSliderModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
