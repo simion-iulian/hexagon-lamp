@@ -31,7 +31,8 @@ import { HoneycombColorPicker } from '../components/honeycomb-color-picker/honey
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    BLE
+    BLE,
+    HoneycombColorPicker
   ]
 })
 export class AppModule {}
