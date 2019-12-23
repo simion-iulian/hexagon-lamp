@@ -11,12 +11,10 @@ import { Component } from '@angular/core';
   templateUrl: 'honeycomb-color-picker.html'
 })
 export class HoneycombColorPicker {
-
-  text: string;
-
   constructor() {
-    console.log('Hello HoneycombColorPickerComponent Component');
-    this.text = 'Hello World';
   }
 
+  updateColor(event){
+    console.log("updating color from honeycomb");
+  }
 }

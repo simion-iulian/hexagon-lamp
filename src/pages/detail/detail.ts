@@ -107,7 +107,6 @@ export class DetailPage {
   setColor(event){
 
     console.log('setColor');
-    console.log(event);
     let data = new Uint8Array([this.red, this.green, this.blue, this.white]);
     console.log("Updating color to: "  + data)
     this.ble.write(this.peripheral.id, NEOPIXEL_SERVICE, COLOR, data.buffer).then(
@@ -126,17 +125,7 @@ export class DetailPage {
     );
   }
 
-  setSpeed(event){
-    console.log("Selecting speed: " + this.speed)
-    // let data = new Uint8Array([this.speed])
-    // this.ble.write(this.peripheral.id, NEOPIXEL_SERVICE, SPEED, data.buffer).then(
-    //   () => console.log('Updated pattern speed'),
-    //   () => console.log('Error updating pattern speed')
-    // );
-  }
-
   setBrightness(event){
-
     console.log('setBrightness');
     let data = new Uint8Array([this.brightness]);
     this.ble.write(this.peripheral.id, NEOPIXEL_SERVICE, BRIGHTNESS, data.buffer).then(
