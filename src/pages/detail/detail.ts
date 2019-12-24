@@ -3,6 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { BLE } from '@ionic-native/ble';
 import { HoneycombColorPicker } from '../../components/honeycomb-color-picker/honeycomb-color-picker';
+import { Color } from '../../components/color';
 
 // NeoPixel Service UUIDs
 const NEOPIXEL_SERVICE = 'ccc0';
@@ -16,11 +17,8 @@ const PATTERN = 'ccc4';
   templateUrl: 'detail.html',
 })
 export class DetailPage {
-
+  currentColor: Color;
   peripheral: any = {};
-  red: number;
-  green: number;
-  blue: number;
   colorPicker : HoneycombColorPicker;
   white: number;
   brightness: number;
@@ -51,10 +49,13 @@ export class DetailPage {
       buffer => {
         var data = new Uint8Array(buffer);
         this.ngZone.run(() => {
-          this.red = data[0];
-          this.green = data[1];
-          this.blue = data[2];
-          this.white = data[3];
+          const red = data[0], 
+              green = data[1], 
+               blue = data[2], 
+              white = data[3];
+          const savedColor = new Color(red, green, blue, white)    
+          this.currentColor = savedColor;
+          this.updateLampColor(savedColor);
         });
       }
     );
@@ -117,6 +118,11 @@ export class DetailPage {
   updateLampColor(colorEvent){    
     console.log("color from event" + JSON.stringify(colorEvent));
 
+    this.currentColor = new Color(
+        colorEvent.R, 
+        colorEvent.G, 
+        colorEvent.B, 
+        colorEvent.W)
     let bluetoothData = this.colorToBluetoothData(colorEvent);
 
     this.ble

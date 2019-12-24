@@ -19,7 +19,7 @@ export class HoneycombColorPicker{
     ["honeycomb-blue",    new Color(0,0,255,0)],
     ["honeycomb-cyan",    new Color(0,255,255,0)],
     ["honeycomb-magenta", new Color(255,0,255,0)],
-    ["honeycomb-orange",  new Color(255,30,255,0)]
+    ["honeycomb-orange",  new Color(255,120,0,0)]
   ]);
 
   @Output() colorChange : EventEmitter<Color> = new EventEmitter();
@@ -28,8 +28,7 @@ export class HoneycombColorPicker{
   updateColor(event){
     const hexagonID = event.target.id;
     const colorForSelectedHexagon = this.honeycombColors.get(hexagonID);
-    console.log("color" + JSON.stringify(colorForSelectedHexagon));
-    this.colorChange.emit(colorForSelectedHexagon);
 
+    this.colorChange.emit(colorForSelectedHexagon);
   }
 }
