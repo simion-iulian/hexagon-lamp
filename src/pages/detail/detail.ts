@@ -106,21 +106,30 @@ export class DetailPage {
     )
   }
 
-  updateLampColor(newColor){
-    
-    console.log("color from event" + JSON.stringify(newColor))
-    let data = new Uint8Array([this.red, this.green, this.blue, this.white]);
+  colorToBluetoothData(color){
+    return new Uint8Array([
+      color.R, 
+      color.G, 
+      color.B, 
+      color.W]).buffer;
+  }
 
-    this.ble.write(this.peripheral.id, NEOPIXEL_SERVICE, COLOR, data.buffer).then(
-      () => console.log('Updated color'),
-      () => console.log('Error updating color')
-    );
+  updateLampColor(colorEvent){    
+    console.log("color from event" + JSON.stringify(colorEvent));
+
+    let bluetoothData = this.colorToBluetoothData(colorEvent);
+
+    this.ble
+      .write(this.peripheral.id, NEOPIXEL_SERVICE, COLOR, bluetoothData)
+      .then(
+        () => console.log("Updated color"),
+        () => console.log("Error updating color")
+      );
   }
 
   setColor(event){
-    // this.colorPicker.updateColor(event);
 
-    this.updateLampColor(null);
+    this.updateLampColor({R: 0, G: 0, B:0, W: this.white});
 
   }
 

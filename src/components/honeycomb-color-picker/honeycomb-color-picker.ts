@@ -13,7 +13,14 @@ import { Color } from '../color';
 })
 export class HoneycombColorPicker{
   honeycombColors = new Map([
-    ["honeycomb-center", new Color(0, 0, 0, 200)]]);
+    ["honeycomb-center",  new Color(0,0,0,200)],
+    ["honeycomb-red",     new Color(255,0,0,0)],
+    ["honeycomb-green",   new Color(0,255,0,0)],
+    ["honeycomb-blue",    new Color(0,0,255,0)],
+    ["honeycomb-cyan",    new Color(0,255,255,0)],
+    ["honeycomb-magenta", new Color(255,0,255,0)],
+    ["honeycomb-orange",  new Color(255,30,255,0)]
+  ]);
 
   @Output() colorChange : EventEmitter<Color> = new EventEmitter();
   constructor() {}
