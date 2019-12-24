@@ -115,6 +115,12 @@ export class DetailPage {
       color.W]).buffer;
   }
 
+  sendColorToLamp(data, successCallback, failCallback){
+    this.ble
+      .write(this.peripheral.id, NEOPIXEL_SERVICE, COLOR, data)
+      .then(successCallback, failCallback );
+  }
+
   updateLampColor(colorEvent){    
     console.log("color from event" + JSON.stringify(colorEvent));
 
@@ -123,20 +129,15 @@ export class DetailPage {
         colorEvent.G, 
         colorEvent.B, 
         colorEvent.W)
-    let bluetoothData = this.colorToBluetoothData(colorEvent);
 
-    this.ble
-      .write(this.peripheral.id, NEOPIXEL_SERVICE, COLOR, bluetoothData)
-      .then(
-        () => console.log("Updated color"),
-        () => console.log("Error updating color")
-      );
+    let data = this.colorToBluetoothData(colorEvent);
+    this.sendColorToLamp(data,
+      () => console.log("Updated with: " + JSON.stringify(data)),
+      () => console.log("Error updating"));
   }
 
   setColor(event){
-
     this.updateLampColor({R: 0, G: 0, B:0, W: this.white});
-
   }
 
   setPattern(event){
