@@ -19,7 +19,13 @@ export class HoneycombColorPicker{
     ["honeycomb-blue",    new Color(0,0,255,0)],
     ["honeycomb-cyan",    new Color(0,255,255,0)],
     ["honeycomb-magenta", new Color(255,0,255,0)],
-    ["honeycomb-orange",  new Color(255,120,0,0)]
+    ["honeycomb-orange",  new Color(255,120,0,0)],
+    ["honeycomb-green-pastel",   new Color(0,255,0,80)],
+    [ "honeycomb-cyan-pastel",   new Color(0,155,155,80)],
+    [ "honeycomb-blue-pastel",   new Color(0,0,255,80)],
+    ["honeycomb-magenta-pastel", new Color(255,0,255,50)],
+    [    "honeycomb-red-pastel", new Color(255,0,0,80)],
+    [ "honeycomb-orange-pastel", new Color(255,120,0,80)],
   ]);
 
   @Output() colorChange : EventEmitter<Color> = new EventEmitter();
