@@ -2,6 +2,7 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { BLE } from '@ionic-native/ble';
+import { HoneycombColorPicker } from '../../components/honeycomb-color-picker/honeycomb-color-picker';
 
 // NeoPixel Service UUIDs
 const NEOPIXEL_SERVICE = 'ccc0';
@@ -20,6 +21,7 @@ export class DetailPage {
   red: number;
   green: number;
   blue: number;
+  colorPicker : HoneycombColorPicker;
   white: number;
   brightness: number;
   pattern: number;
@@ -104,15 +106,21 @@ export class DetailPage {
     )
   }
 
-  setColor(event){
-
-    console.log('setColor');
+  updateLampColor(newColor){
+    
+    console.log("color from event" + JSON.stringify(newColor))
     let data = new Uint8Array([this.red, this.green, this.blue, this.white]);
-    console.log("Updating color to: "  + data)
+
     this.ble.write(this.peripheral.id, NEOPIXEL_SERVICE, COLOR, data.buffer).then(
       () => console.log('Updated color'),
       () => console.log('Error updating color')
     );
+  }
+
+  setColor(event){
+    // this.colorPicker.updateColor(event);
+
+    this.updateLampColor(null);
 
   }
 

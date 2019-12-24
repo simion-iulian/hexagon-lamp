@@ -1,5 +1,6 @@
-import { Component} from '@angular/core';
+import { Component, EventEmitter, Output} from '@angular/core';
 import { Color } from '../color';
+
 /**
  * Generated class for the HoneycombColorPicker component.
  *
@@ -11,19 +12,17 @@ import { Color } from '../color';
   templateUrl: 'honeycomb-color-picker.html'
 })
 export class HoneycombColorPicker{
-  honeycombColors = {"honeycomb-center": new Color(0, 0, 0, 200)};
+  honeycombColors = new Map([
+    ["honeycomb-center", new Color(0, 0, 0, 200)]]);
 
-  constructor() {
-    console.log("creating color picker");
-    console.log(JSON.stringify(this.honeycombColors))
-  }
+  @Output() colorChange : EventEmitter<Color> = new EventEmitter();
+  constructor() {}
 
   updateColor(event){
-    console.log("updating color from honeycomb");
-    const hexagon_touched = event.target.id;
-    console.log("Touched: " + hexagon_touched)
-    console.log(JSON.stringify(this.honeycombColors))
-    console.log("setting color" + JSON.stringify(this.honeycombColors[hexagon_touched]));    
-    console.log(event);
+    const hexagonID = event.target.id;
+    const colorForSelectedHexagon = this.honeycombColors.get(hexagonID);
+    console.log("color" + JSON.stringify(colorForSelectedHexagon));
+    this.colorChange.emit(colorForSelectedHexagon);
+
   }
 }
