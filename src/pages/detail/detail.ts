@@ -45,39 +45,38 @@ export class DetailPage {
     });
 
     // get the current values so we can sync the UI
-    this.ble.read(peripheral.id, NEOPIXEL_SERVICE, COLOR).then(
-      buffer => {
-        var data = new Uint8Array(buffer);
-        this.ngZone.run(() => {
-          const red = data[0], 
-              green = data[1], 
-               blue = data[2], 
-              white = data[3];
-          const savedColor = new Color(red, green, blue, white)    
-          this.currentColor = savedColor;
-          this.updateLampColor(savedColor);
-        });
-      }
-    );
+    this.ble
+      .read(peripheral.id, NEOPIXEL_SERVICE, COLOR)
+      .then(buffer => {
+            var data = new Uint8Array(buffer);
+            this.ngZone.run(() => {
+              const red = data[0], 
+                  green = data[1], 
+                   blue = data[2], 
+                  white = data[3];
+              const savedColor = new Color(red, green, blue, white)    
+              this.currentColor = savedColor;
+              this.updateLampColor(savedColor);
+            });
+          })
+    .catch(err => {console.log("error reading setting to device state" + JSON.stringify(err))});
 
-    this.ble.read(peripheral.id, NEOPIXEL_SERVICE, BRIGHTNESS).then(
-      buffer => {        
-        var data = new Uint8Array(buffer);
-        this.ngZone.run(() => {
-          this.brightness = data[0];
-        });
-      }
-    );
+    this.ble.read(peripheral.id, NEOPIXEL_SERVICE, BRIGHTNESS).then(buffer => {
+      var data = new Uint8Array(buffer);
+      this.ngZone.run(() => {
+        this.brightness = data[0];
+      });
+    });
 
-    this.ble.read(peripheral.id, NEOPIXEL_SERVICE, POWER_SWITCH).then(
-      buffer => {
+    this.ble
+      .read(peripheral.id, NEOPIXEL_SERVICE, POWER_SWITCH)
+      .then(buffer => {
         var data = new Uint8Array(buffer);
-        console.log('Read Power Switch. Result: ' + data[0]);
+        console.log("Read Power Switch. Result: " + data[0]);
         this.ngZone.run(() => {
           this.power = data[0] !== 0;
         });
-      }
-    );
+      });
   }
 
   onDeviceDisconnected(peripheral) {
@@ -122,8 +121,6 @@ export class DetailPage {
   }
 
   updateLampColor(colorEvent){    
-    console.log("color from event" + JSON.stringify(colorEvent));
-
     this.currentColor = new Color(
         colorEvent.R, 
         colorEvent.G, 
@@ -132,7 +129,7 @@ export class DetailPage {
 
     let data = this.colorToBluetoothData(colorEvent);
     this.sendColorToLamp(data,
-      () => console.log("Updated with: " + JSON.stringify(data)),
+      () => console.log("Updated with: " + JSON.stringify(colorEvent)),
       () => console.log("Error updating"));
   }
 
