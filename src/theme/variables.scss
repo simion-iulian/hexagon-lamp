@@ -41,12 +41,12 @@ $colors: (
   dark:       #222,
 
   sun-yellow: rgb(250,219,10),
-  header-bg: #654321,
+  header-bg: #404040,
   pattern-text-color: #271401,
   header-text-color: white,
-  customColor:(
-    base: #664320,
-    contrast: #371401
+  navColor:(
+    base: #404040,
+    contrast: rgb(50, 132, 255)
   ), 
   
   red-slider-color: rgb(240, 3, 3),

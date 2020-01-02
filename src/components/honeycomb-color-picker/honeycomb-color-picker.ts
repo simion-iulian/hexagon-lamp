@@ -19,13 +19,13 @@ export class HoneycombColorPicker{
     ["honeycomb-blue",    new Color(  0,  0,255,  0)],
     ["honeycomb-cyan",    new Color(  0,200,200,  0)],
     ["honeycomb-magenta", new Color(255,  0,220,  0)],
-    ["honeycomb-orange",  new Color(200,100,  0,  0)],
+    ["honeycomb-amber",   new Color(200,100,  0,  0)],
     ["honeycomb-green-pastel",   new Color(  0,250,  0,150)],
     [ "honeycomb-cyan-pastel",   new Color(  0,180,170,140)],
     [ "honeycomb-blue-pastel",   new Color(  0,  0,255,110)],
     ["honeycomb-magenta-pastel", new Color(220,  0,200,100)],
     [    "honeycomb-red-pastel", new Color(255,  0,  0,110)],
-    [ "honeycomb-orange-pastel", new Color(250,105,  0,140)],
+    [ "honeycomb-amber-pastel",  new Color(250,105,  0,140)],
   ]);
 
   //this is bound to the detail page honeycomb element
