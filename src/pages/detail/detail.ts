@@ -17,9 +17,11 @@ const PATTERN = 'ccc4';
   templateUrl: 'detail.html',
 })
 export class DetailPage {
-  currentColor: Color;
   peripheral: any = {};
   colorPicker : HoneycombColorPicker;
+  red: number;
+  green: number;
+  blue: number;
   white: number;
   brightness: number;
   pattern: number;
@@ -55,7 +57,6 @@ export class DetailPage {
                    blue = data[2], 
                   white = data[3];
               const savedColor = new Color(red, green, blue, white)    
-              this.currentColor = savedColor;
               this.updateLampColor(savedColor);
             });
           })
@@ -120,14 +121,18 @@ export class DetailPage {
       .then(successCallback, failCallback );
   }
 
+  updateModelColors(color) {
+    this.red = color.R;
+    this.green = color.G;
+    this.blue = color.B;
+    this.white = color.W;
+  }
+
   updateLampColor(colorEvent){    
-    this.currentColor = new Color(
-        colorEvent.R, 
-        colorEvent.G, 
-        colorEvent.B, 
-        colorEvent.W)
 
     let data = this.colorToBluetoothData(colorEvent);
+    
+    this.updateModelColors(colorEvent);
     this.sendColorToLamp(data,
       () => console.log("Updated with: " + JSON.stringify(colorEvent)),
       () => console.log("Error updating"));
@@ -137,14 +142,14 @@ export class DetailPage {
     this.updateLampColor({R: 0, G: 0, B:0, W: this.white});
   }
 
-  setPattern(event){
-    console.log("Selecting pattern: " + this.pattern)
-    let data = new Uint8Array([this.pattern])
-    this.ble.write(this.peripheral.id, NEOPIXEL_SERVICE, PATTERN, data.buffer).then(
-      () => console.log('Updated pattern'),
-      () => console.log('Error updating pattern')
-    );
-  }
+  // setPattern(event){
+  //   console.log("Selecting pattern: " + this.pattern)
+  //   let data = new Uint8Array([this.pattern])
+  //   this.ble.write(this.peripheral.id, NEOPIXEL_SERVICE, PATTERN, data.buffer).then(
+  //     () => console.log('Updated pattern'),
+  //     () => console.log('Error updating pattern')
+  //   );
+  // }
 
   setBrightness(event){
     console.log('setBrightness');

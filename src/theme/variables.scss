@@ -49,15 +49,15 @@ $colors: (
     contrast: rgb(50, 132, 255)
   ), 
   
-  red-slider-color: rgb(240, 3, 3),
-  green-slider-color: rgb(3,240,3),
-  blue-slider-color: rgb(50, 132, 255),
-  white-slider-color: rgb(255, 236, 236),
-  
-  red-slider-bg: rgb(50, 3, 3),
-  green-slider-bg: rgb(3,50,3),
-  blue-slider-bg: rgb(3,3,50),
-  white-slider-bg: rgb(82, 82, 82),
+  red-slider-bar: #f49aa1,
+  green-slider-bar: #78feba,
+  blue-slider-bar: #7fb7ff,
+  white-slider-bar: #fdf3b8,
+
+  red-slider-color: #e54b4b,
+  green-slider-color: #53ea3e,
+  blue-slider-color: #5b5be7,
+  white-slider-color: #fdf3b8,
   brightness-slider-bg: rgb(32,32,32),
   transparent-bg-color: rgba(0,0,0,0)
 );

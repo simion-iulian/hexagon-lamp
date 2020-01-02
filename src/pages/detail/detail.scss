@@ -13,19 +13,31 @@ page-detail {
     background: color($colors, header-bg);
   }
   .red-slider{
-    background: color($colors, red-slider-bg);
+    background: color($colors, header-bg);
     height: 8.33%;
+  }
+  .red-slider .range-bar{
+    background: color($colors, red-slider-bar);
   }
   .green-slider{
-    background: color($colors, green-slider-bg);
+    background: color($colors, header-bg);
     height: 8.33%;
   }
+
+  .green-slider .range-bar{
+    background: color($colors, green-slider-bar);
+  }
+
   .blue-slider{
-    background: color($colors, blue-slider-bg);
+    background: color($colors, header-bg);
     height: 8.33%;
+  }
+
+  .blue-slider .range-bar{
+    background: color($colors, blue-slider-bar);
   }
   .white-slider{
-    background: color($colors, white-slider-bg);
+    background: color($colors, header-bg);
     height: 8.33%;
   }
   .brightness-slider{
