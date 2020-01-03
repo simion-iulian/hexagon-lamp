@@ -139,7 +139,7 @@ export class DetailPage {
   }
 
   setColor(event){
-    this.updateLampColor({R: 0, G: 0, B:0, W: this.white});
+    this.updateLampColor({R: this.red, G: this.green, B:this.blue, W: this.white});
   }
 
   // setPattern(event){

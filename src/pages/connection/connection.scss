@@ -1,7 +1,4 @@
 page-connection {
-    .transparent-bg {
-        background-color: rgba(0,0,0,0);
-    }
 
     // Overriding Android specific items to have transparent background
     .toolbar-background-md {
@@ -17,5 +14,9 @@ page-connection {
         -webkit-background-size: cover;
         -moz-background-size: cover;
         background-size: cover;
+    }
+
+    .device-name-bg{
+        color: color($colors, sun-yellow);
     }
 }

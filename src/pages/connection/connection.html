@@ -1,8 +1,8 @@
 <ion-header >
-  <ion-navbar>
+  <ion-navbar color="connectionNavColor">
     <ion-buttons text-center>
       <button ion-button (click)="scan()">
-          Connect to Heks
+          Scan
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -12,7 +12,7 @@
    <!-- <img src="assets/img/connection-bg.png"/> -->
    <ion-list text-center> 
     <button ion-item *ngFor="let device of devices" (click)="deviceSelected(device)">
-      <h1 class="transparent-bg" style="text-align: center;">{{ device.name || 'Unnamed' }}</h1>
+      <h1 class="device-name-bg" style="text-align: center;">{{ device.name || 'Unnamed' }}</h1>
       <!-- <p>{{ device.id }}</p> -->
       <!-- <p>RSSI: {{device.rssi}}</p> -->
     </button>  
