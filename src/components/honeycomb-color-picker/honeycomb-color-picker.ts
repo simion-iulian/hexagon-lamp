@@ -21,7 +21,7 @@ export class HoneycombColorPicker{
     ["honeycomb-magenta", new Color(255,  0,220,  0)],
     ["honeycomb-amber",   new Color(200,100,  0,  0)],
     ["honeycomb-green-pastel",   new Color(  0,250,  0,150)],
-    [ "honeycomb-cyan-pastel",   new Color(  0,180,170,140)],
+    [ "honeycomb-cyan-pastel",   new Color(  0,120,140,100)],
     [ "honeycomb-blue-pastel",   new Color(  0,  0,255,110)],
     ["honeycomb-magenta-pastel", new Color(220,  0,200,100)],
     [    "honeycomb-red-pastel", new Color(255,  0,  0,110)],

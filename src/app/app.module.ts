@@ -7,14 +7,14 @@ import { BLE } from '@ionic-native/ble';
 
 import { DuuuApp } from './app.component';
 import { ConnectionPage } from '../pages/connection/connection';
-import { DetailPage } from '../pages/detail/detail';
+import { ColorPickerPage } from '../pages/colorpicker/colorpicker';
 import { HoneycombColorPicker } from '../components/honeycomb-color-picker/honeycomb-color-picker';
 
 @NgModule({
   declarations: [
     DuuuApp,
     ConnectionPage,
-    DetailPage,
+    ColorPickerPage,
     HoneycombColorPicker
   ],
   imports: [
@@ -25,7 +25,7 @@ import { HoneycombColorPicker } from '../components/honeycomb-color-picker/honey
   entryComponents: [
     DuuuApp,
     ConnectionPage,
-    DetailPage
+    ColorPickerPage
   ],
   providers: [
     StatusBar,

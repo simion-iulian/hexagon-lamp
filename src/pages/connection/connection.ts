@@ -2,7 +2,7 @@ import { BLE } from '@ionic-native/ble';
 import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 
-import { DetailPage } from '../detail/detail';
+import { ColorPickerPage } from '../colorpicker/colorpicker';
 
 const NEOPIXEL_SERVICE = 'ccc0';
 
@@ -45,7 +45,7 @@ export class ConnectionPage {
 
   deviceSelected(device) {
     console.log(JSON.stringify(device) + ' selected');
-    this.navCtrl.push(DetailPage, {
+    this.navCtrl.push(ColorPickerPage, {
       device: device
     });
   }

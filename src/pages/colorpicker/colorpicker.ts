@@ -13,10 +13,10 @@ const POWER_SWITCH = 'ccc3';
 const PATTERN = 'ccc4';
 
 @Component({
-  selector: 'page-detail',
-  templateUrl: 'detail.html',
+  selector: 'page-colorpicker',
+  templateUrl: 'colorpicker.html',
 })
-export class DetailPage {
+export class ColorPickerPage {
   peripheral: any = {};
   colorPicker : HoneycombColorPicker;
   red: number;
@@ -96,7 +96,7 @@ export class DetailPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad DetailPage');
+    console.log('ionViewDidLoad ColorPickerPage');
   }
 
   ionViewWillLeave() {
