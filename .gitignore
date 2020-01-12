@@ -108,3 +108,4 @@ plugins
 www
 .tsling.json
 .vscode/
+arduino/
