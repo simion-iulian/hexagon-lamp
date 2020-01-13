@@ -9,13 +9,15 @@ import { DuuuApp } from './app.component';
 import { ConnectionPage } from '../pages/connection/connection';
 import { ColorPickerPage } from '../pages/colorpicker/colorpicker';
 import { HoneycombColorPicker } from '../components/honeycomb-color-picker/honeycomb-color-picker';
+import { AnimationPage } from '../pages/animation/animation';
 
 @NgModule({
   declarations: [
     DuuuApp,
     ConnectionPage,
     ColorPickerPage,
-    HoneycombColorPicker
+    HoneycombColorPicker,
+    AnimationPage
   ],
   imports: [
     BrowserModule,
@@ -25,7 +27,8 @@ import { HoneycombColorPicker } from '../components/honeycomb-color-picker/honey
   entryComponents: [
     DuuuApp,
     ConnectionPage,
-    ColorPickerPage
+    ColorPickerPage,
+    AnimationPage
   ],
   providers: [
     StatusBar,

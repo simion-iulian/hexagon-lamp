@@ -4,13 +4,12 @@ import { ToastController } from 'ionic-angular';
 import { BLE } from '@ionic-native/ble';
 import { HoneycombColorPicker } from '../../components/honeycomb-color-picker/honeycomb-color-picker';
 import { Color } from '../../components/color';
+import { AnimationPage } from '../animation/animation';
 
 // NeoPixel Service UUIDs
 const NEOPIXEL_SERVICE = 'ccc0';
 const COLOR = 'ccc1';
-const BRIGHTNESS = 'ccc2';
 const POWER_SWITCH = 'ccc3';
-const PATTERN = 'ccc4';
 
 @Component({
   selector: 'page-colorpicker',
@@ -24,9 +23,10 @@ export class ColorPickerPage {
   blue: number;
   white: number;
   brightness: number;
-  pattern: number;
   speed: number;
   power: boolean;
+  animationPage = AnimationPage;
+  animationParams: Object;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
@@ -34,6 +34,7 @@ export class ColorPickerPage {
               private toastCtrl: ToastController,
               private ngZone: NgZone) {
     let device = navParams.get('device');
+   
     this.ble.connect(device.id).subscribe(
       peripheral => this.onConnected(peripheral),
       peripheral => this.onDeviceDisconnected(peripheral)
@@ -44,6 +45,9 @@ export class ColorPickerPage {
     console.log('Connected to ' + peripheral.name + ' ' + peripheral.id);
     this.ngZone.run(() => {
       this.peripheral = peripheral;
+      this.animationParams = {ble: this.ble, 
+        device: this.peripheral, 
+        neopixelService: NEOPIXEL_SERVICE}
     });
 
     // get the current values so we can sync the UI
@@ -61,13 +65,6 @@ export class ColorPickerPage {
             });
           })
     .catch(err => {console.log("error reading setting to device state" + JSON.stringify(err))});
-
-    this.ble.read(peripheral.id, NEOPIXEL_SERVICE, BRIGHTNESS).then(buffer => {
-      var data = new Uint8Array(buffer);
-      this.ngZone.run(() => {
-        this.brightness = data[0];
-      });
-    });
 
     this.ble
       .read(peripheral.id, NEOPIXEL_SERVICE, POWER_SWITCH)
@@ -99,12 +96,15 @@ export class ColorPickerPage {
     console.log('ionViewDidLoad ColorPickerPage');
   }
 
-  ionViewWillLeave() {
-    console.log('ionViewWillLeave disconnecting Bluetooth');
+  disconnectLamp (){
     this.ble.disconnect(this.peripheral.id).then(
       () => console.log('Disconnected ' + JSON.stringify(this.peripheral)),
       () => console.log('ERROR disconnecting ' + JSON.stringify(this.peripheral))
     )
+  }
+  ionViewWillLeave() {
+    console.log('Leaving color picker page');
+    // this.disconnectLamp();
   }
 
   colorToBluetoothData(color){
@@ -116,9 +116,12 @@ export class ColorPickerPage {
   }
 
   sendColorToLamp(data, successCallback, failCallback){
+    console.log("color peripheral")
+    console.log(JSON.stringify(this.peripheral));
+
     this.ble
       .write(this.peripheral.id, NEOPIXEL_SERVICE, COLOR, data)
-      .then(successCallback, failCallback );
+      .then(successCallback, failCallback);
   }
 
   updateModelColors(color) {
@@ -140,24 +143,6 @@ export class ColorPickerPage {
 
   setColor(event){
     this.updateLampColor({R: this.red, G: this.green, B:this.blue, W: this.white});
-  }
-
-  // setPattern(event){
-  //   console.log("Selecting pattern: " + this.pattern)
-  //   let data = new Uint8Array([this.pattern])
-  //   this.ble.write(this.peripheral.id, NEOPIXEL_SERVICE, PATTERN, data.buffer).then(
-  //     () => console.log('Updated pattern'),
-  //     () => console.log('Error updating pattern')
-  //   );
-  // }
-
-  setBrightness(event){
-    console.log('setBrightness');
-    let data = new Uint8Array([this.brightness]);
-    this.ble.write(this.peripheral.id, NEOPIXEL_SERVICE, BRIGHTNESS, data.buffer).then(
-      () => console.log('Updated brightness'),
-      () => console.log('Error updating brightness')
-    );
   }
 
   onPowerSwitchChange(event) {

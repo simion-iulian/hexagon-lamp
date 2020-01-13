@@ -1,10 +1,9 @@
 const bleno = require('bleno');
 const ws281x = require('rpi-sk6812');
 
-
 let lampState = {
 "name":"Heks",
-"strip_length":96, 
+"strip_length":96,
 	"settings":{
 		"r":0,
 		"g":0,
@@ -25,7 +24,7 @@ let r,
 
 console.log(JSON.stringify(lampState))
 
-var NUM_LEDS = lampState.strip_length, 
+var NUM_LEDS = lampState.strip_length,
    pixelData = new Uint32Array(NUM_LEDS);
 
 const config =
@@ -42,6 +41,7 @@ const lampName = lampState.name;
  w = lampState.settings.w;
  patternState = lampState.settings.pattern;
  switchState = lampState.settings.power;
+//  bright = lampState.settings.brightness;
 
 // ---- trap the SIGINT and reset before exit
 // TODO: forgot to close the bluetooth when I close the app. Better to clean-up that connection too
@@ -51,32 +51,42 @@ process.on('SIGINT', function () {
 });
 
 
-function loadState(){
+function renderState(){
   //Load the inital settings? I make a call right after this.
   r = lampState.settings.r;
   g = lampState.settings.g;
   b = lampState.settings.b;
+  w = lampState.settings.w;
   patternState = lampState.settings.pattern;
   switchState = lampState.settings.power;
+  // bright = lampState.settings.brightness;
   if(switchState == 1) {
-    for(var i = 0; i<NUM_LEDS;i++)
-      pixelData[i] = rgb2Int(r,g,b);
+    // if (patternState == 0 ){
+    //   for(var i = 0; i<NUM_LEDS;i++)
+    //     pixelData[i] = rgbw2Int(r,g,b,w);
+    //   }
+    // else {
+      rainbow();
+    // }
   }
   else {
     for(var i = 0; i<NUM_LEDS;i++)
     pixelData[i] = 0x000000;
   }
+  // ws281x.setBrightness(bright);
   ws281x.render(pixelData);
 }
 
-loadState();
+renderState();
 
 function saveState(){
   lampState.settings.r = r;
   lampState.settings.g = g;
   lampState.settings.b = b;
+  lampState.settings.w = w;
   lampState.settings.pattern = patternState;
   lampState.settings.power = switchState;
+  // lampState.settings.brightness = bright;
 }
 
 // Bluetooth service/characteristic things
@@ -92,13 +102,17 @@ var switchSettings = {
   characteristic_id:'2901'
 };
 
-var patternSettings = {
+var brightnessSettings = {
   service_id:'ccc2',
   characteristic_id:'2901'
 };
 
 var colorSettings = {
   service_id:'ccc1',
+  characteristic_id:'2901'
+};
+var patternSettings = {
+  service_id:'ccc4',
   characteristic_id:'2901'
 };
 
@@ -130,7 +144,7 @@ class SwitchCharacteristic extends bleno.Characteristic {
           var status = this.argument === 0 ? "Off" : "On";
           console.log(`${this.name} is now ${status}`);
           lampState.settings.power = this.argument;
-          loadState();
+          renderState();
           callback(this.RESULT_SUCCESS);
       } catch (err) {
           console.error(err);
@@ -183,8 +197,8 @@ class ColorCharacteristic extends bleno.Characteristic {
         w = data[3];
         pixelData[i] = rgbw2Int(r,g,b,w);
       }
-      ws281x.render(pixelData);
-      saveState();
+      // ws281x.render(pixelData);
+      // saveState();
       callback(this.RESULT_SUCCESS);
       } catch (err) {
           console.error(err);
@@ -193,7 +207,7 @@ class ColorCharacteristic extends bleno.Characteristic {
   }
   onReadRequest(offset, callback) {
     try {
-        let data = new Buffer([r,g,b]);
+        let data = new Buffer([r,g,b,w]);
         callback(this.RESULT_SUCCESS, data);
     } catch (err) {
         console.error(err);
@@ -202,7 +216,7 @@ class ColorCharacteristic extends bleno.Characteristic {
   }
 }
 
-class PatternCharacteristic extends bleno.Characteristic {
+class BrightnessCharacteristic extends bleno.Characteristic {
   constructor(uuid, name) {
       super({
           uuid: uuid,
@@ -217,10 +231,54 @@ class PatternCharacteristic extends bleno.Characteristic {
       });
       this.argument = 0;
       this.name = name;
-      console.log("created Pattern characteristic");
   }
   onWriteRequest(data, offset, withoutResponse, callback) {
-    console.log("pattern change");
+      try {
+          if(data.length != 1) {
+              callback(this.RESULT_INVALID_ATTRIBUTE_LENGTH);
+              return;
+          }
+          this.argument = data.readUInt8();
+          bright = this.argument;
+          console.log(`${this.name} is now ${this.argument}`);
+          // ws281x.setBrightness(this.argument);
+          ws281x.render(pixelData);
+          saveState();
+          callback(this.RESULT_SUCCESS);
+      } catch (err) {
+          console.error(err);
+          callback(this.RESULT_UNLIKELY_ERROR);
+      }
+  }
+  onReadRequest(offset, callback) {
+    try {
+        let data = new Buffer([bright]);
+        callback(this.RESULT_SUCCESS, data);
+    } catch (err) {
+        console.error(err);
+        callback(this.RESULT_UNLIKELY_ERROR);
+    }
+  }
+}
+
+class PatternCharacteristic extends bleno.Characteristic {
+  constructor(uuid, name) {
+      super({
+          uuid: uuid,
+          properties: ["write","read", "notify"],
+          value: null,
+          descriptors: [
+              new bleno.Descriptor({
+                  uuid: "2901",
+                  value: name
+                })
+          ]
+      });
+      this.argument = 0;
+      this.name = name;
+  }
+  onWriteRequest(data, offset, withoutResponse, callback) {
+    console.log("Writing pattern");
     console.log(JSON.stringify(data));
     try {
       if(data.length != 1) {
@@ -245,7 +303,7 @@ class PatternCharacteristic extends bleno.Characteristic {
   }
   onReadRequest(offset, callback) {
     try {
-        let data = new Buffer([bright]);
+        let data = new Buffer(1);
         callback(this.RESULT_SUCCESS, data);
     } catch (err) {
         console.error(err);
@@ -256,15 +314,17 @@ class PatternCharacteristic extends bleno.Characteristic {
 
 
 let switchCharacteristic = new SwitchCharacteristic(switchSettings.service_id, "Switch");
-let patternCharacteristic = new PatternCharacteristic(patternSettings.service_id, "Pattern");
+let brightnessCharacteristic = new BrightnessCharacteristic(brightnessSettings.service_id, "Brightness");
 let colorCharacteristic = new ColorCharacteristic(colorSettings.service_id,  "Color (24-bit)");
+let patternCharacteristic = new PatternCharacteristic(patternSettings.service_id,  "Pattern:");
 
 var neopixelService =  new bleno.PrimaryService({
   uuid: serviceSettings.service_id,
   characteristics: [
    switchCharacteristic,
-   patternCharacteristic,
-   colorCharacteristic
+   brightnessCharacteristic,
+   colorCharacteristic,
+   patternCharacteristic
   ]
 })
 
@@ -280,7 +340,7 @@ bleno.on('stateChange', function(state) {
 // Notify the console that we've accepted a connection
 bleno.on('accept', function(clientAddress) {
   console.log("Accepted connection from address: " + clientAddress);
-  loadState();
+  renderState();
 });
 
 // Notify the console that we have disconnected from a client
@@ -309,6 +369,8 @@ bleno.on("servicesSet", err => {
 
 bleno.on("servicesSetError", err => console.log("Bleno: servicesSetError"));
 
+//This is a comment that could've been a class or a better abstraction
+//TODO: Refactor away the magic numbers and some of the behavior
 //Animations
 //State 1 - Rainbow
 var rainbowInterval;
@@ -322,7 +384,7 @@ function rainbow(){
   if(switchState == 1)
     ws281x.render(pixelData)
   else
-    loadState()
+    renderState()
   }, 1000/30);
 }
 
@@ -341,9 +403,9 @@ function rgb2Int(r, g, b) {
   return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
 
-function rgbw2Int(r, g, b, w) {
-  return ((w & 0xff) << 24) + 
-         ((r & 0xff) << 16) + 
-         ((g & 0xff) << 8) + 
+function rgbw2Int(r, g, b, w = 0) {
+  return ((w & 0xff) << 24) +
+         ((r & 0xff) << 16) +
+         ((g & 0xff) << 8) +
          (b & 0xff);
 }
