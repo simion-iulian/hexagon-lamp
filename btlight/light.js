@@ -1,12 +1,12 @@
 const bleno = require('bleno');
-const ws281x = require('rpi-sk6812');
+const stripController = require('rpi-sk6812');
+const AnimationPlayer = require('./animation-player.js');
 
 
 let lampState = {
-"name":"Heks",
-"strip_length":96, 
+  "name":"Heks",
 	"settings":{
-		"r":0,
+    "r":0,
 		"g":0,
     "b":0,
     "w":100,
@@ -17,23 +17,31 @@ let lampState = {
 }
 
 let r,
-    g,
-    b,
-    patternState,
-    switchState,
-    bright;
+g,
+b,
+patternState,
+switchState,
+bright;
 
-console.log(JSON.stringify(lampState))
+console.log(JSON.stringify(lampState));
 
-var NUM_LEDS = lampState.strip_length, 
-   pixelData = new Uint32Array(NUM_LEDS);
+const NUM_LEDS = 96, 
+pixelData = new Uint32Array(NUM_LEDS);
+
+const strip = {
+  controller: stripController,
+  leds: NUM_LEDS,
+  pixels: new Uint32Array(NUM_LEDS)
+}
+
 
 const config =
-{"leds" : 96,
+{"leds" : NUM_LEDS,
 "brightness" : 255,
 "strip" : 'grbw' }
 
-ws281x.configure(config);
+stripController.configure(config);
+let animationPlayer = new AnimationPlayer(strip);
 
 const lampName = lampState.name;
  r = lampState.settings.r;
@@ -46,7 +54,7 @@ const lampName = lampState.name;
 // ---- trap the SIGINT and reset before exit
 // TODO: forgot to close the bluetooth when I close the app. Better to clean-up that connection too
 process.on('SIGINT', function () {
-  ws281x.reset();
+  stripController.reset();
   process.nextTick(function () { process.exit(0); });
 });
 
@@ -66,7 +74,7 @@ function loadState(){
     for(var i = 0; i<NUM_LEDS;i++)
     pixelData[i] = 0x000000;
   }
-  ws281x.render(pixelData);
+  stripController.render(pixelData);
 }
 
 loadState();
@@ -173,7 +181,10 @@ class ColorCharacteristic extends bleno.Characteristic {
           callback(this.RESULT_INVALID_ATTRIBUTE_LENGTH);
           return;
       }
-      clearIntervals();
+
+      if(animationPlayer.isPlaying)
+        animationPlayer.stop();
+
       this.argument=data
       console.log(`${this.name} is ${this.argument}`);
       for(var i = 0; i<NUM_LEDS;i++){
@@ -183,7 +194,7 @@ class ColorCharacteristic extends bleno.Characteristic {
         w = data[3];
         pixelData[i] = rgbw2Int(r,g,b,w);
       }
-      ws281x.render(pixelData);
+      stripController.render(pixelData);
       saveState();
       callback(this.RESULT_SUCCESS);
       } catch (err) {
@@ -220,8 +231,6 @@ class PatternCharacteristic extends bleno.Characteristic {
       console.log("created Pattern characteristic");
   }
   onWriteRequest(data, offset, withoutResponse, callback) {
-    console.log("pattern change");
-    console.log(JSON.stringify(data));
     try {
       if(data.length != 1) {
         callback(this.RESULT_INVALID_ATTRIBUTE_LENGTH);
@@ -229,11 +238,11 @@ class PatternCharacteristic extends bleno.Characteristic {
       }
       this.argument = data.readUInt8()
       patternState = this.argument
-      console.log(`${this.name} is ${this.argument}`);
-      clearIntervals();
+      // clearIntervals();
       switch(patternState){
         case 1:{
-          rainbow();
+          console.log("changing to " + patternState);
+          animationPlayer.play(patternState);
         }
       }
       saveState();
@@ -311,31 +320,6 @@ bleno.on("servicesSetError", err => console.log("Bleno: servicesSetError"));
 
 //Animations
 //State 1 - Rainbow
-var rainbowInterval;
-function rainbow(){
-  var offset = 0;
-  rainbowInterval = setInterval(function () {
-    for (var i = 0; i < NUM_LEDS; i++) {
-      pixelData[i] = colorwheel((offset + i) % 256);
-    }
-  offset = (offset + 1) % 256;
-  if(switchState == 1)
-    ws281x.render(pixelData)
-  else
-    loadState()
-  }, 1000/30);
-}
-
-function clearIntervals(){
-  clearInterval(rainbowInterval);
-}
-
-function colorwheel(pos) {
-  pos = 255 - pos;
-  if (pos < 85) { return rgb2Int(255 - pos * 3, 0, pos * 3); }
-  else if (pos < 170) { pos -= 85; return rgb2Int(0, pos * 3, 255 - pos * 3); }
-  else { pos -= 170; return rgb2Int(pos * 3, 255 - pos * 3, 0); }
-}
 
 function rgb2Int(r, g, b) {
   return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);

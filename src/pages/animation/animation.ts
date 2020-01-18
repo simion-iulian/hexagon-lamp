@@ -36,7 +36,9 @@ export class AnimationPage {
   setPattern(event){
     console.log("Selecting pattern: 1");
     
-    console.log(JSON.stringify(this.device));
+    console.log(JSON.stringify(event));
+    console.log(JSON.stringify(event.target));
+    console.log(JSON.stringify(event.target.id));
 
     let data = new Uint8Array([1]);
     console.log(this.device.id);
