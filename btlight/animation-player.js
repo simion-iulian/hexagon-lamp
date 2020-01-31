@@ -35,7 +35,7 @@ class AnimationPlayer {
         var offset = 0;
         const strip = this.strip;
         const colorwheel = this.colorwheel;
-        let pixels = strip.pixels;
+        let pixels = new Uint32Array(strip.leds);
         this.animationInterval = setInterval(function () 
             {
               for (let i = 0; i < strip.leds; i++) {
@@ -43,7 +43,7 @@ class AnimationPlayer {
             }
         offset = (offset + 1) % 256;
         
-        strip.controller.render(pixels)
+        strip.render(pixels)
         }, 1000/30);
     }
 }
