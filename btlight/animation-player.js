@@ -1,7 +1,7 @@
 class AnimationPlayer {
     constructor(strip){
-        this.strip = strip
-        this.animationInterval = {}
+        this.strip = strip,
+        this.animationInterval = {},
         this.isPlaying = true;
     }
 
@@ -35,15 +35,13 @@ class AnimationPlayer {
         var offset = 0;
         const strip = this.strip;
         const colorwheel = this.colorwheel;
-        let pixels = new Uint32Array(strip.leds);
         this.animationInterval = setInterval(function () 
             {
-              for (let i = 0; i < strip.leds; i++) {
-              pixels[i] = colorwheel((offset + i) % 256);
+              for (let i = 0; i < strip.length; i++) {
+              strip.setPixel(i, colorwheel((offset + i) % 256));
             }
         offset = (offset + 1) % 256;
-        
-        strip.render(pixels)
+        strip.render()
         }, 1000/30);
     }
 }

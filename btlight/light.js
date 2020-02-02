@@ -1,7 +1,8 @@
 const bleno = require('bleno');
-const stripController = require('rpi-sk6812');
+const Strip = require('./strip-controller');
 const AnimationPlayer = require('./animation-player.js');
 
+const strip = new Strip();
 
 let lampState = {
   "name":"Heks",
@@ -25,23 +26,7 @@ bright;
 
 console.log(JSON.stringify(lampState));
 
-const NUM_LEDS = 96, 
-pixelData = new Uint32Array(NUM_LEDS);
-
-const strip = {
-  controller: stripController,
-  leds: NUM_LEDS,
-  pixels: new Uint32Array(NUM_LEDS)
-}
-
-
-const config =
-{"leds" : NUM_LEDS,
-"brightness" : 255,
-"strip" : 'grbw' }
-
-stripController.configure(config);
-let animationPlayer = new AnimationPlayer(strip);
+const animationPlayer = new AnimationPlayer(strip);
 
 const lampName = lampState.name;
  r = lampState.settings.r;
@@ -54,7 +39,7 @@ const lampName = lampState.name;
 // ---- trap the SIGINT and reset before exit
 // TODO: forgot to close the bluetooth when I close the app. Better to clean-up that connection too
 process.on('SIGINT', function () {
-  stripController.reset();
+  strip.reset();
   process.nextTick(function () { process.exit(0); });
 });
 
@@ -67,14 +52,14 @@ function loadState(){
   patternState = lampState.settings.pattern;
   switchState = lampState.settings.power;
   if(switchState == 1) {
-    for(var i = 0; i<NUM_LEDS;i++)
-      pixelData[i] = rgb2Int(r,g,b);
+    for(var i = 0; i<strip.length;i++)
+      strip.setPixel(i, rgb2Int(r,g,b));
   }
   else {
-    for(var i = 0; i<NUM_LEDS;i++)
-    pixelData[i] = 0x000000;
+    for(var i = 0; i<strip.length;i++)
+    strip.setPixel(i, 0x000000);
   }
-  stripController.render(pixelData);
+  strip.render();
 }
 
 loadState();
@@ -181,20 +166,18 @@ class ColorCharacteristic extends bleno.Characteristic {
           callback(this.RESULT_INVALID_ATTRIBUTE_LENGTH);
           return;
       }
-
       if(animationPlayer.isPlaying)
         animationPlayer.stop();
-
       this.argument=data
       console.log(`${this.name} is ${this.argument}`);
-      for(var i = 0; i<NUM_LEDS;i++){
+      for(var i = 0; i<strip.length;i++) {
         r = data[0];
         g = data[1];
         b = data[2];
         w = data[3];
-        pixelData[i] = rgbw2Int(r,g,b,w);
+        strip.setPixel(i, rgbw2Int(r,g,b,w));
       }
-      stripController.render(pixelData);
+      strip.render();
       saveState();
       callback(this.RESULT_SUCCESS);
       } catch (err) {
@@ -231,6 +214,9 @@ class PatternCharacteristic extends bleno.Characteristic {
       console.log("created Pattern characteristic");
   }
   onWriteRequest(data, offset, withoutResponse, callback) {
+    console.log("pattern change");
+    console.log(JSON.stringify(data));
+    console.log("length + " + data.length);
     try {
       if(data.length != 1) {
         callback(this.RESULT_INVALID_ATTRIBUTE_LENGTH);
@@ -238,6 +224,7 @@ class PatternCharacteristic extends bleno.Characteristic {
       }
       this.argument = data.readUInt8()
       patternState = this.argument
+      console.log(`${this.name} is ${this.argument}`);
       // clearIntervals();
       switch(patternState){
         case 1:{
