@@ -3,38 +3,19 @@ const Strip = require('./strip-controller');
 const AnimationPlayer = require('./animation-player.js');
 
 const strip = new Strip();
-
+const lampName = "Heks";
 let lampState = {
-  "name":"Heks",
-	"settings":{
-    "r":0,
-		"g":0,
-    "b":0,
-    "w":100,
-		"pattern":1,
-		"power":0,
-		"brightness":226
-	}
+  "r":0,
+  "g":0,
+  "b":0,
+  "w":100,
+  "pattern":1,
+  "power":0,
+  "brightness":226
 }
-
-let r,
-g,
-b,
-patternState,
-switchState,
-bright;
-
 console.log(JSON.stringify(lampState));
 
 const animationPlayer = new AnimationPlayer(strip);
-
-const lampName = lampState.name;
- r = lampState.settings.r;
- g = lampState.settings.g;
- b = lampState.settings.b;
- w = lampState.settings.w;
- patternState = lampState.settings.pattern;
- switchState = lampState.settings.power;
 
 // ---- trap the SIGINT and reset before exit
 // TODO: forgot to close the bluetooth when I close the app. Better to clean-up that connection too
@@ -43,17 +24,13 @@ process.on('SIGINT', function () {
   process.nextTick(function () { process.exit(0); });
 });
 
-
 function loadState(){
-  //Load the inital settings? I make a call right after this.
-  r = lampState.settings.r;
-  g = lampState.settings.g;
-  b = lampState.settings.b;
-  patternState = lampState.settings.pattern;
-  switchState = lampState.settings.power;
+  const r = lampState.r, g = lampState.g, b = lampState.b, w = lampState.w,
+  patternState = lampState.pattern,
+  switchState = lampState.power;
   if(switchState == 1) {
-    for(var i = 0; i<strip.length;i++)
-      strip.setPixel(i, rgb2Int(r,g,b));
+    for(var i = 0; i < strip.length;i++)
+      strip.setPixel(i, rgbw2Int(r,g,b,w));
   }
   else {
     for(var i = 0; i<strip.length;i++)
@@ -63,14 +40,6 @@ function loadState(){
 }
 
 loadState();
-
-function saveState(){
-  lampState.settings.r = r;
-  lampState.settings.g = g;
-  lampState.settings.b = b;
-  lampState.settings.pattern = patternState;
-  lampState.settings.power = switchState;
-}
 
 // Bluetooth service/characteristic things
 // What's the relationship between the services and characteristics?
@@ -122,7 +91,7 @@ class SwitchCharacteristic extends bleno.Characteristic {
           this.argument = data.readUInt8();
           var status = this.argument === 0 ? "Off" : "On";
           console.log(`${this.name} is now ${status}`);
-          lampState.settings.power = this.argument;
+          lampState.power = this.argument;
           loadState();
           callback(this.RESULT_SUCCESS);
       } catch (err) {
@@ -132,7 +101,7 @@ class SwitchCharacteristic extends bleno.Characteristic {
   }
   onReadRequest(offset, callback) {
     try {
-        let data = new Buffer(lampState.settings.power);
+        let data = new Buffer(lampState.power);
         callback(this.RESULT_SUCCESS, data);
     } catch (err) {
         console.error(err);
@@ -158,7 +127,7 @@ class ColorCharacteristic extends bleno.Characteristic {
       this.name = name;
   }
   onWriteRequest(data, offset, withoutResponse, callback) {
-     console.log("["+data[0]+"]["+data[1]+"]["+data[2]+"]["+data[3]+"]");
+    console.log("["+data[0]+"]["+data[1]+"]["+data[2]+"]["+data[3]+"]");
 
     try {
       data = new Uint16Array(data)
@@ -168,17 +137,15 @@ class ColorCharacteristic extends bleno.Characteristic {
       }
       if(animationPlayer.isPlaying)
         animationPlayer.stop();
+
       this.argument=data
       console.log(`${this.name} is ${this.argument}`);
       for(var i = 0; i<strip.length;i++) {
-        r = data[0];
-        g = data[1];
-        b = data[2];
-        w = data[3];
+        const r = data[0], g = data[1], b = data[2], w = data[3];
         strip.setPixel(i, rgbw2Int(r,g,b,w));
+        lampState.r = r; lampState.g = g; lampState.b = b; lampState.w = w;
       }
       strip.render();
-      saveState();
       callback(this.RESULT_SUCCESS);
       } catch (err) {
           console.error(err);
@@ -187,7 +154,7 @@ class ColorCharacteristic extends bleno.Characteristic {
   }
   onReadRequest(offset, callback) {
     try {
-        let data = new Buffer([r,g,b]);
+        let data = new Buffer([lampState.r,lampState.g,lampState.b]);
         callback(this.RESULT_SUCCESS, data);
     } catch (err) {
         console.error(err);
@@ -223,16 +190,16 @@ class PatternCharacteristic extends bleno.Characteristic {
         return;
       }
       this.argument = data.readUInt8()
-      patternState = this.argument
+      let patternState = this.argument
       console.log(`${this.name} is ${this.argument}`);
       // clearIntervals();
       switch(patternState){
         case 1:{
           console.log("changing to " + patternState);
+          lampState.pattern = patternState;
           animationPlayer.play(patternState);
         }
       }
-      saveState();
       callback(this.RESULT_SUCCESS);
       } catch (err) {
           console.error(err);
@@ -282,7 +249,6 @@ bleno.on('accept', function(clientAddress) {
 // Notify the console that we have disconnected from a client
 bleno.on('disconnect', function(clientAddress) {
   console.log("Disconnected from address: " + clientAddress);
-  saveState();
 });
 
 bleno.on('advertisingStart', function(error) {

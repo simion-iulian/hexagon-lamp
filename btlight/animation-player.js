@@ -2,16 +2,20 @@ class AnimationPlayer {
     constructor(strip){
         this.strip = strip,
         this.animationInterval = {},
-        this.isPlaying = true;
+        this.isPlaying = false;
     }
 
     // Public interface to use the player
-    play(pattern){
-        this.isPlaying = true;
-        switch(pattern){
+    play(pattern) {
+        if(this.isPlaying == true)
+            clearInterval(this.animationInterval);
+
+        switch(pattern) {
             case 1:
                 this.rainbow();
         }
+
+        this.isPlaying = true;
     }
 
     stop(){
@@ -41,8 +45,10 @@ class AnimationPlayer {
               strip.setPixel(i, colorwheel((offset + i) % 256));
             }
         offset = (offset + 1) % 256;
+        
         strip.render()
         }, 1000/30);
+        
     }
 }
 
