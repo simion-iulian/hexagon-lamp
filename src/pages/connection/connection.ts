@@ -44,15 +44,11 @@ export class ConnectionPage {
   }
 
   deviceSelected(device) {
-    console.log(JSON.stringify(device) + ' selected');
-    //I'd like to instantiate here the device instead of pushing the device to be instantiated on the next page
-    
-    this.bleProvider.addDeviceToProvider(device);
+    this.bleProvider.connectDevice(device);
     this.navCtrl.push(ColorPickerPage, {
       device: device
     });
   }
-  
 
   showAlert(title, message) {
     let alert = this.alertCtrl.create({

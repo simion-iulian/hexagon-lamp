@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
 import { HoneycombColorPicker } from '../../components/honeycomb-color-picker/honeycomb-color-picker';
 import { AnimationPage } from '../animation/animation';
 import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
@@ -23,26 +24,22 @@ export class ColorPickerPage {
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
-              private bleProvider: BluetoothProvider) {}
+              private bleProvider: BluetoothProvider,
+              private toastCtrl: ToastController,
+              ) {} 
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ColorPickerPage');
-  }
+  onDeviceDisconnected(peripheral) {
+    let toast = this.toastCtrl.create({
+      message: 'The peripheral unexpectedly disconnected',
+      duration: 3000,
+      position: 'center'
+    });
 
-  ionViewWillLeave() {
-    console.log('Leaving color picker page');
-  }
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
 
-  colorToBluetoothData(color){
-    return new Uint8Array([
-      color.R, 
-      color.G, 
-      color.B, 
-      color.W]).buffer;
-  }
-
-  sendColorToLamp(data, successCallback, failCallback){
-    this.bleProvider.sendColor(data,successCallback,failCallback)
+    toast.present();
   }
 
   updateModelColors(color) {
@@ -52,17 +49,15 @@ export class ColorPickerPage {
     this.white = color.W;
   }
 
-  updateLampColor(colorEvent) {    
-    console.log("colorpicker send to lamp")
-    console.log(JSON.stringify(colorEvent));
+  sendColorToLamp(data, successCallback, failCallback){
+    this.bleProvider.sendColor(data,successCallback,failCallback);
+  }
 
-    let data = this.colorToBluetoothData(colorEvent);
-    console.log("data before sending" + JSON.stringify(data));
-    
-    this.updateModelColors(colorEvent);
-    this.sendColorToLamp(data,
-      () => console.log("Updated with: " + JSON.stringify(data)),
-      () => console.log("Error updating" + JSON.stringify(data)));
+  updateLampColor(color){    
+    this.updateModelColors(color);
+    this.sendColorToLamp(color,
+      () => console.log("Updated with: " + JSON.stringify(color)),
+      () => console.log("Error updating"));
   }
 
   setColor(event){
@@ -70,18 +65,6 @@ export class ColorPickerPage {
   }
 
   onPowerSwitchChange(event) {
-    console.log('onPowerSwitchChange');
-    let value = this.power ? 1 : 0;
-    let data = new Uint8Array([value]);
-    console.log('Power Switch Property ' + this.power);
-    // this.ble.write(this.peripheral.id, NEOPIXEL_SERVICE, POWER_SWITCH, data.buffer).then(
-    //   () => {
-    //     console.log('Updated power switch')
-    //     if (this.power && this.brightness === 0) {
-    //       this.brightness = 0x3f; // cheating, should rely on notification
-    //     }
-    //   },
-    //   () => console.log('Error updating  power switch')
-    // );
+    this.bleProvider.OnOff(this.power);
   }
 }
