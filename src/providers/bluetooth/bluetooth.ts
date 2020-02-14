@@ -44,4 +44,10 @@ export class BluetoothProvider {
 
     toast.present();
   }
+
+  sendColor(data, successCallback, failCallback){
+    this.ble
+      .write(this.peripheral.id, NEOPIXEL_SERVICE, COLOR, data)
+      .then(successCallback, failCallback);
+  }
 }
