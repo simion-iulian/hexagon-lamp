@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { HoneycombColorPicker } from '../../components/honeycomb-color-picker/honeycomb-color-picker';
@@ -16,11 +16,9 @@ export class ColorPickerPage {
   green: number;
   blue: number;
   white: number;
-  brightness: number;
   speed: number;
   power: boolean;
   animationPage = AnimationPage;
-  animationParams: Object;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
@@ -28,7 +26,7 @@ export class ColorPickerPage {
               private toastCtrl: ToastController,
               ) {} 
 
-  onDeviceDisconnected(peripheral) {
+  onDeviceDisconnected() {
     let toast = this.toastCtrl.create({
       message: 'The peripheral unexpectedly disconnected',
       duration: 3000,
@@ -65,6 +63,6 @@ export class ColorPickerPage {
   }
 
   onPowerSwitchChange(event) {
-    this.bleProvider.OnOff(this.power);
+    this.bleProvider.onOff(this.power);
   }
 }

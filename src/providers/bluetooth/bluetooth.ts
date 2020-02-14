@@ -6,6 +6,7 @@ import 'rxjs/add/operator/map';
 // NeoPixel Service UUIDs
 const NEOPIXEL_SERVICE = 'ccc0';
 const COLOR = 'ccc1';
+const PATTERN = 'ccc2';
 const POWER_SWITCH = 'ccc3';
 
 @Injectable()
@@ -58,7 +59,14 @@ export class BluetoothProvider {
       .then(successCallback, failCallback);
   }
 
-  OnOff(power){
+  setPattern(value, success, fail){
+    let data = new Uint8Array([1]);
+    this.ble
+      .write(this.peripheral.id, NEOPIXEL_SERVICE, PATTERN, data.buffer)
+      .then(success,fail);
+  }
+
+  onOff(power){
     let value = power ? 1 : 0;
     let data = new Uint8Array([value]);
      
