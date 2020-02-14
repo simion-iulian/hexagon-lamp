@@ -13,7 +13,6 @@ const NEOPIXEL_SERVICE = 'ccc0';
 })
 export class ConnectionPage {
   devices: any[] = [];
-  statusMessage: string;
 
   constructor(public navCtrl: NavController, 
               private ble: BLE,

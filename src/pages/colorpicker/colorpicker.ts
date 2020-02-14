@@ -57,6 +57,8 @@ export class ColorPickerPage {
     console.log(JSON.stringify(colorEvent));
 
     let data = this.colorToBluetoothData(colorEvent);
+    console.log("data before sending" + JSON.stringify(data));
+    
     this.updateModelColors(colorEvent);
     this.sendColorToLamp(data,
       () => console.log("Updated with: " + JSON.stringify(data)),

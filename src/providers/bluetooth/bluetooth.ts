@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BLE } from '@ionic-native/ble';
 import { ToastController } from 'ionic-angular';
-
 import 'rxjs/add/operator/map';
 
 // NeoPixel Service UUIDs
@@ -46,6 +45,7 @@ export class BluetoothProvider {
   }
 
   sendColor(data, successCallback, failCallback){
+    console.log("provider sending color" + JSON.stringify(data) + "to" + (JSON.stringify(this.peripheral)));
     this.ble
       .write(this.peripheral.id, NEOPIXEL_SERVICE, COLOR, data)
       .then(successCallback, failCallback);
