@@ -18,7 +18,7 @@ export class BluetoothProvider {
     console.log('Hello Bluetooth Provider');
   }
 
-  addDeviceToProvider(device){
+  addDeviceToProvider(device) {
     console.log("connecting to in provider" + JSON.stringify(device))
     this.ble.connect(device.id).subscribe(
       peripheral => this.onConnected(peripheral),

@@ -29,7 +29,7 @@ export class ConnectionPage {
 
   scan() {
     this.devices = [];  // clear existing list
-    this.ble.scan([NEOPIXEL_SERVICE], 5).subscribe(
+    this.ble.scan([NEOPIXEL_SERVICE], 4).subscribe(
       device => this.onDiscoveredDevice(device), 
       e => this.showAlert('Scan Failed', 'Error scanning for BLE devices.')
     );
@@ -38,7 +38,7 @@ export class ConnectionPage {
   }
 
   onDiscoveredDevice(device) {
-    console.log('Discovered ' + JSON.stringify(device, null, 2));
+    console.log('Discovered ' + JSON.stringify(device));
     this.ngZone.run(() => {
       this.devices.push(device);
     });
@@ -53,17 +53,7 @@ export class ConnectionPage {
       device: device
     });
   }
-
-  instantiateBluetoothProvider(device){
-    console.log("instantiating ble in provider");
-  }
-
-  setStatus(message) {
-    console.log(message);
-    this.ngZone.run(() => {
-      this.statusMessage = message;
-    });
-  } 
+  
 
   showAlert(title, message) {
     let alert = this.alertCtrl.create({

@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { HoneycombColorPicker } from '../../components/honeycomb-color-picker/honeycomb-color-picker';
 import { AnimationPage } from '../animation/animation';
