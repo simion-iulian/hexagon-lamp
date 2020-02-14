@@ -3,6 +3,7 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 
 import { ColorPickerPage } from '../colorpicker/colorpicker';
+import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
 
 const NEOPIXEL_SERVICE = 'ccc0';
 
@@ -11,17 +12,16 @@ const NEOPIXEL_SERVICE = 'ccc0';
   templateUrl: 'connection.html'
 })
 export class ConnectionPage {
-  
   devices: any[] = [];
-  statusMessage: string;
 
   constructor(public navCtrl: NavController, 
               private ble: BLE,
+              private bleProvider: BluetoothProvider,
               private alertCtrl: AlertController,
               private ngZone: NgZone) { 
   }
 
-  ionViewDidEnter() {
+  ionViewDidEnter(){
     console.log('ionViewDidEnter');
     this.scan();
   }
@@ -37,25 +37,18 @@ export class ConnectionPage {
   }
 
   onDiscoveredDevice(device) {
-    console.log('Discovered ' + JSON.stringify(device, null, 2));
+    console.log('Discovered ' + JSON.stringify(device));
     this.ngZone.run(() => {
       this.devices.push(device);
     });
   }
 
   deviceSelected(device) {
-    console.log(JSON.stringify(device) + ' selected');
+    this.bleProvider.connectDevice(device);
     this.navCtrl.push(ColorPickerPage, {
       device: device
     });
   }
-
-  setStatus(message) {
-    console.log(message);
-    this.ngZone.run(() => {
-      this.statusMessage = message;
-    });
-  } 
 
   showAlert(title, message) {
     let alert = this.alertCtrl.create({

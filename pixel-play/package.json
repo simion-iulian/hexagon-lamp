@@ -1,0 +1,18 @@
+{
+  "name": "pixel-play",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "canvas": "^2.6.1",
+    "keypress": "^0.2.1",
+    "p5": "^0.10.2",
+    "rpi-sk6812": "^1.0.0"
+  }
+}

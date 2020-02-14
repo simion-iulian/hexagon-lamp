@@ -5,13 +5,11 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
   <ion-navbar>
     <ion-title>Back</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 <ion-content padding>
-  <button id="pattern1" ion-button (click)="setPattern($event)">Set Animation</button>
+  <animation-picker (patternChange)="setPattern($event)">Set Animation</animation-picker> 
 </ion-content>
