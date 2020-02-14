@@ -35,46 +35,46 @@ export class ColorPickerPage {
               private ngZone: NgZone) {
     let device = navParams.get('device');
    
-    this.ble.connect(device.id).subscribe(
-      peripheral => this.onConnected(peripheral),
-      peripheral => this.onDeviceDisconnected(peripheral)
-    );
+    // this.ble.connect(device.id).subscribe(
+    //   peripheral => this.onConnected(peripheral),
+    //   peripheral => this.onDeviceDisconnected(peripheral)
+    // );
   }
 
   onConnected(peripheral) {
-    console.log('Connected to ' + peripheral.name + ' ' + peripheral.id);
-    this.ngZone.run(() => {
-      this.peripheral = peripheral;
-      this.animationParams = {ble: this.ble, 
-        device: this.peripheral, 
-        neopixelService: NEOPIXEL_SERVICE}
-    });
+    console.log('Connected to in color picker page ' + peripheral.name + ' ' + peripheral.id);
+    // this.ngZone.run(() => {
+    //   this.peripheral = peripheral;
+    //   this.animationParams = {ble: this.ble, 
+    //     device: this.peripheral, 
+    //     neopixelService: NEOPIXEL_SERVICE}
+    // });
 
     // get the current values so we can sync the UI
-    this.ble
-      .read(peripheral.id, NEOPIXEL_SERVICE, COLOR)
-      .then(buffer => {
-            var data = new Uint8Array(buffer);
-            this.ngZone.run(() => {
-              const red = data[0], 
-                  green = data[1], 
-                   blue = data[2], 
-                  white = data[3];
-              const savedColor = new Color(red, green, blue, white)    
-              this.updateLampColor(savedColor);
-            });
-          })
-    .catch(err => {console.log("error reading setting to device state" + JSON.stringify(err))});
+    // this.ble
+    //   .read(peripheral.id, NEOPIXEL_SERVICE, COLOR)
+    //   .then(buffer => {
+    //         var data = new Uint8Array(buffer);
+    //         this.ngZone.run(() => {
+    //           const red = data[0], 
+    //               green = data[1], 
+    //                blue = data[2], 
+    //               white = data[3];
+    //           const savedColor = new Color(red, green, blue, white)    
+    //           this.updateLampColor(savedColor);
+    //         });
+    //       })
+    // .catch(err => {console.log("error reading setting to device state" + JSON.stringify(err))});
 
-    this.ble
-      .read(peripheral.id, NEOPIXEL_SERVICE, POWER_SWITCH)
-      .then(buffer => {
-        var data = new Uint8Array(buffer);
-        console.log("Read Power Switch. Result: " + data[0]);
-        this.ngZone.run(() => {
-          this.power = data[0] !== 0;
-        });
-      });
+    // this.ble
+    //   .read(peripheral.id, NEOPIXEL_SERVICE, POWER_SWITCH)
+    //   .then(buffer => {
+    //     var data = new Uint8Array(buffer);
+    //     console.log("Read Power Switch. Result: " + data[0]);
+    //     this.ngZone.run(() => {
+    //       this.power = data[0] !== 0;
+    //     });
+    //   });
   }
 
   onDeviceDisconnected(peripheral) {

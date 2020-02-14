@@ -35,6 +35,8 @@ export class HoneycombColorPicker{
 
   updateColor(event){
     const hexagonID = event.target.id;
+    console.log("honeycomb target");
+    console.log(JSON.stringify(event.target));
     const colorForSelectedHexagon = this.honeycombColors.get(hexagonID);
 
     this.colorChange.emit(colorForSelectedHexagon);

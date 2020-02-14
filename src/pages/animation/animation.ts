@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { BLE } from '@ionic-native/ble';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { AnimationPicker } from '../../components/animation-picker/animation-picker';
 
 const PATTERN = 'ccc2';
 
@@ -18,12 +19,14 @@ const PATTERN = 'ccc2';
 export class AnimationPage {
   device: any = {};
   pattern: number;
+  animationPicker : AnimationPicker;
   ble: BLE;
   neopixelService: string;
 
   constructor(
     public navCtrl: NavController, 
-    public navParams: NavParams) {
+    public navParams: NavParams,
+    private ngZone: NgZone) {
       this.device = navParams.get('device');
       this.ble = navParams.get('ble');
       this.neopixelService = navParams.get('neopixelService');
@@ -34,10 +37,9 @@ export class AnimationPage {
   }
 
   setPattern(event){
-    console.log("Selecting pattern: 1");
+    console.log("Selecting pattern on page");
     
     console.log(JSON.stringify(event));
-    console.log(JSON.stringify(event.target));
     console.log(JSON.stringify(event.target.id));
 
     let data = new Uint8Array([1]);

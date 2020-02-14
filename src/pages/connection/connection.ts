@@ -3,6 +3,7 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 
 import { ColorPickerPage } from '../colorpicker/colorpicker';
+import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
 
 const NEOPIXEL_SERVICE = 'ccc0';
 
@@ -11,24 +12,24 @@ const NEOPIXEL_SERVICE = 'ccc0';
   templateUrl: 'connection.html'
 })
 export class ConnectionPage {
-  
   devices: any[] = [];
   statusMessage: string;
 
   constructor(public navCtrl: NavController, 
               private ble: BLE,
+              private bleProvider: BluetoothProvider,
               private alertCtrl: AlertController,
               private ngZone: NgZone) { 
   }
 
-  ionViewDidEnter() {
+  ionViewDidEnter(){
     console.log('ionViewDidEnter');
     this.scan();
   }
 
   scan() {
     this.devices = [];  // clear existing list
-    this.ble.scan([NEOPIXEL_SERVICE], 4).subscribe(
+    this.ble.scan([NEOPIXEL_SERVICE], 5).subscribe(
       device => this.onDiscoveredDevice(device), 
       e => this.showAlert('Scan Failed', 'Error scanning for BLE devices.')
     );
@@ -45,9 +46,16 @@ export class ConnectionPage {
 
   deviceSelected(device) {
     console.log(JSON.stringify(device) + ' selected');
+    //I'd like to instantiate here the device instead of pushing the device to be instantiated on the next page
+    
+    this.bleProvider.addDeviceToProvider(device);
     this.navCtrl.push(ColorPickerPage, {
       device: device
     });
+  }
+
+  instantiateBluetoothProvider(device){
+    console.log("instantiating ble in provider");
   }
 
   setStatus(message) {

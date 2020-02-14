@@ -9,7 +9,9 @@ import { DuuuApp } from './app.component';
 import { ConnectionPage } from '../pages/connection/connection';
 import { ColorPickerPage } from '../pages/colorpicker/colorpicker';
 import { HoneycombColorPicker } from '../components/honeycomb-color-picker/honeycomb-color-picker';
+import { AnimationPicker } from '../components/animation-picker/animation-picker';
 import { AnimationPage } from '../pages/animation/animation';
+import { BluetoothProvider } from '../providers/bluetooth/bluetooth';
 
 @NgModule({
   declarations: [
@@ -17,6 +19,7 @@ import { AnimationPage } from '../pages/animation/animation';
     ConnectionPage,
     ColorPickerPage,
     HoneycombColorPicker,
+    AnimationPicker,
     AnimationPage
   ],
   imports: [
@@ -35,7 +38,9 @@ import { AnimationPage } from '../pages/animation/animation';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     BLE,
-    HoneycombColorPicker
+    HoneycombColorPicker,
+    AnimationPicker,
+    BluetoothProvider
   ]
 })
 export class AppModule {}
