@@ -28,7 +28,7 @@ export class AnimationPicker {
   setSpeed() {
     console.log("Speed is" + this.rainbow_speed)
     this.patternChange.emit({
-      pattern: 1, 
+      pattern_number: 1, 
       speed: this.rainbow_speed, 
       enable_pastel: true});    
   }

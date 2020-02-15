@@ -176,26 +176,23 @@ class PatternCharacteristic extends bleno.Characteristic {
                 })
           ]
       });
-      this.argument = 0;
       this.name = name;
       console.log("created Pattern characteristic");
   }
   onWriteRequest(data, offset, withoutResponse, callback) {
     console.log("pattern change");
     console.log(JSON.stringify(data));
-    console.log("length + " + data.length);
+    console.log("length: " + data.length);
     try {
-      if(data.length != 1) {
-        callback(this.RESULT_INVALID_ATTRIBUTE_LENGTH);
-        return;
-      }
-      this.argument = data.readUInt8()
-      console.log(`${this.name} is ${this.argument}`);
+      // if(data.length != 1) {
+      //   callback(this.RESULT_INVALID_ATTRIBUTE_LENGTH);
+      //   return;
+      // }
 
       const pattern = {
-        "number": this.argument,
-        "speed" : 1,
-        "enable_pastel" : true
+        "number": data[0],
+        "speed" : data[1],
+        "enable_pastel" : data[2]
       }
 
       animationPlayer.play(pattern);

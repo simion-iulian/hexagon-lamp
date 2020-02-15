@@ -10,9 +10,10 @@ class AnimationPlayer {
         if(this.isPlaying == true)
             clearInterval(this.animationInterval);
 
-        switch(pattern) {
+        console.log("Animation player pattern: " + JSON.stringify(pattern))    
+        switch(pattern.pattern_number) {
             case 1:
-                this.rainbow();
+                this.rainbow(pattern.speed);
         }
 
         this.isPlaying = true;
@@ -35,7 +36,7 @@ class AnimationPlayer {
         else { pos -= 170; return rgb2Int(pos * 3, 255 - pos * 3, 0); }
     }
 
-    rainbow(){
+    rainbow(speed = 1){
         var offset = 0;
         const strip = this.strip;
         const colorwheel = this.colorwheel;
@@ -44,7 +45,7 @@ class AnimationPlayer {
               for (let i = 0; i < strip.length; i++) {
               strip.setPixel(i, colorwheel((offset + i) % 256));
             }
-        offset = (offset + 1) % 256;
+        offset = (offset + speed) % 256;
         
         strip.render()
         }, 1000/30);
