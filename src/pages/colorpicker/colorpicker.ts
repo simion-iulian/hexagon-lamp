@@ -16,7 +16,6 @@ export class ColorPickerPage {
   green: number;
   blue: number;
   white: number;
-  speed: number;
   power: boolean;
   animationPage = AnimationPage;
 

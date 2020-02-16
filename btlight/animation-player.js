@@ -1,7 +1,9 @@
+const Strip = require('./strip-controller');
+
 class AnimationPlayer {
-    constructor(strip){
-        this.strip = strip,
-        this.animationInterval = {},
+    constructor(strip) {
+        this.strip = strip;
+        this.animationInterval = {};
         this.isPlaying = false;
     }
 
@@ -10,11 +12,11 @@ class AnimationPlayer {
         if(this.isPlaying == true)
             clearInterval(this.animationInterval);
 
-        switch(pattern) {
+        console.log("Animation player pattern: " + JSON.stringify(pattern))    
+        switch(pattern.number) {
             case 1:
-                this.rainbow();
+                this.rainbow(pattern.speed, pattern.enable_pastel);
         }
-
         this.isPlaying = true;
     }
 
@@ -24,31 +26,28 @@ class AnimationPlayer {
     }
 
     // Private methods to be used for animating
-
-    colorwheel (pos) {
-        const rgb2Int = (r, g, b) => {
-            return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
-        }
+    colorwheel (pos, pastel) {
+        const rgb2Int = (r, g, b) => { return Strip.convertRGBW2Int(r,g,b, pastel);}
         pos = 255 - pos;
         if (pos < 85) { return rgb2Int(255 - pos * 3, 0, pos * 3); }
         else if (pos < 170) { pos -= 85; return rgb2Int(0, pos * 3, 255 - pos * 3); }
         else { pos -= 170; return rgb2Int(pos * 3, 255 - pos * 3, 0); }
     }
 
-    rainbow(){
+    rainbow(speed, enable_pastel){
         var offset = 0;
+        const pastel = (enable_pastel == 1) ? 80 : 0
         const strip = this.strip;
         const colorwheel = this.colorwheel;
         this.animationInterval = setInterval(function () 
             {
               for (let i = 0; i < strip.length; i++) {
-              strip.setPixel(i, colorwheel((offset + i) % 256));
+              strip.setPixel(i, colorwheel((offset + i) % 256, pastel, strip));
             }
-        offset = (offset + 1) % 256;
+        offset = (offset + speed) % 256;
         
         strip.render()
         }, 1000/30);
-        
     }
 }
 

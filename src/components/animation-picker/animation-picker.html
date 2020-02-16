@@ -1,4 +1,15 @@
 <!-- Generated template for the AnimationPickerComponent component -->
 <div>
   <button id="1" ion-button (click)="updatePattern($event)">Set Animation</button>
+  <ion-item class="rainbow-slider" no-lines>
+        <ion-range 
+          background="dark" 
+          color="rgb(0,255,0)" 
+          min="1"
+          max="20" 
+          debounce="100" 
+          [(ngModel)]="rainbow_speed"
+          (ionChange)="setSpeed()">
+        </ion-range>
+    </ion-item>
 </div>

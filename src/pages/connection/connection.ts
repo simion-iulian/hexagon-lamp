@@ -3,6 +3,7 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 
 import { ColorPickerPage } from '../colorpicker/colorpicker';
+import { AnimationPage } from '../animation/animation';
 import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
 
 const NEOPIXEL_SERVICE = 'ccc0';
@@ -45,9 +46,7 @@ export class ConnectionPage {
 
   deviceSelected(device) {
     this.bleProvider.connectDevice(device);
-    this.navCtrl.push(ColorPickerPage, {
-      device: device
-    });
+    this.navCtrl.push(AnimationPage);
   }
 
   showAlert(title, message) {

@@ -3,7 +3,7 @@ const Strip = require('./strip-controller');
 const AnimationPlayer = require('./animation-player.js');
 
 const strip = new Strip();
-const lampName = "Heks";
+const lampName = "Heks 2";
 let lampState = {
   "r":0,
   "g":0,
@@ -176,35 +176,32 @@ class PatternCharacteristic extends bleno.Characteristic {
                 })
           ]
       });
-      this.argument = 0;
       this.name = name;
       console.log("created Pattern characteristic");
   }
   onWriteRequest(data, offset, withoutResponse, callback) {
     console.log("pattern change");
     console.log(JSON.stringify(data));
-    console.log("length + " + data.length);
+    console.log("length: " + data.length);
     try {
-      if(data.length != 1) {
-        callback(this.RESULT_INVALID_ATTRIBUTE_LENGTH);
-        return;
+      // if(data.length != 1) {
+      //   callback(this.RESULT_INVALID_ATTRIBUTE_LENGTH);
+      //   return;
+      // }
+
+      const pattern = {
+        "number": data[0],
+        "speed" : data[1],
+        "enable_pastel" : data[2]
       }
-      this.argument = data.readUInt8()
-      let patternState = this.argument
-      console.log(`${this.name} is ${this.argument}`);
-      // clearIntervals();
-      switch(patternState){
-        case 1:{
-          console.log("changing to " + patternState);
-          lampState.pattern = patternState;
-          animationPlayer.play(patternState);
-        }
-      }
+
+      animationPlayer.play(pattern);
+
       callback(this.RESULT_SUCCESS);
-      } catch (err) {
-          console.error(err);
-          callback(this.RESULT_UNLIKELY_ERROR);
-      }
+    } catch (err) {
+        console.error(err);
+        callback(this.RESULT_UNLIKELY_ERROR);
+    }
   }
   onReadRequest(offset, callback) {
     try {
