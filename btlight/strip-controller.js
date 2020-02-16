@@ -18,5 +18,12 @@ class Strip {
     reset(){
         this.controller.reset();
     }
+    
+    static convertRGBW2Int(r, g, b, w) {
+        return ((w & 0xff) << 24) + 
+               ((r & 0xff) << 16) + 
+               ((g & 0xff) << 8) + 
+               (b & 0xff);
+      }
 }
 module.exports = Strip;
