@@ -1,11 +1,9 @@
 const controller = require ('rpi-sk6812');
-const NUM_LEDS = 96
-const pixels = new Uint32Array(NUM_LEDS);
 
 class Strip {
     constructor(){
-        this.length = NUM_LEDS,
-        this.pixels = pixels,
+        this.length = 96,
+        this.pixels = new Uint32Array(this.length);
         controller.configure({"leds": this.length, "brightness": 255, "strip": "grbw" }),
         this.controller = controller
     }
@@ -18,7 +16,6 @@ class Strip {
     reset(){
         this.controller.reset();
     }
-    
     static convertRGBW2Int(r, g, b, w) {
         return ((w & 0xff) << 24) + 
                ((r & 0xff) << 16) + 

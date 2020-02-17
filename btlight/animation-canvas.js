@@ -1,5 +1,3 @@
-const keypress         = require('keypress');
-const ws281x           = require('rpi-sk6812');
 const { createCanvas } = require('canvas')
 // copied just perlin noise from p5.js browser version and added minor tweaks for node (no Window required)
 const p5               = require('./noise.js')
@@ -60,34 +58,8 @@ let current   = array2D(LUT_W,LUT_H);
 let previous  = array2D(LUT_W,LUT_H);
 let dampening = 0.99;
 
-// test animations
-const canvasModes = ["circle","square","rainbow text","perlin","ripple"];
-// current demos
-let canvasMode = 0;
-
 // setup keypress to test animations: Press ENTER from SSH to iterated through animations
-keypress(process.stdin);
-process.stdin.on('keypress', function (ch, key) {
-  canvasMode = (canvasMode + 1) % canvasModes.length;
-  clearCanvas();
-  console.log("canvasMode",canvasModes[canvasMode]);
-  if (key && key.ctrl && key.name == 'c') {
-    process.stdin.pause();
-  }
-});
 
-// NeoPixel RGBW setup
-function setupStrip(){
-  const NUM_LEDS = 96;
-  pixelData = new Uint32Array(NUM_LEDS);
-  const config =  {
-                    "leds" : 96,
-                    "brightness" : 51,
-                    "strip" : 'grbw',
-                  }
-
-  ws281x.configure(config);
-}
 // Canvas setup
 function setupCanvas(){
   // you can use most Canvas function so easy text/css colours (e.g. rgb(r,g,b), rgba(r,g,b,1.0), hsl(), etc.)
@@ -149,7 +121,6 @@ function updatePerlin(){
     }
   }
   
-  
   zoff += zincrement; // Increment zoff
   // set pixels
   ctx.putImageData(ctxImageData,0,0);
@@ -202,13 +173,14 @@ function array2D(cols,rows){
 }
 
 // main render loop for canvas animations
-function updateCanvas(){
+function updateCanvas(animation_number){
   frame++;
   clearCanvas();
   // draw something else
   let s = (Math.sin(frame * 0.1 * speed) + 1.0);
   // circle test
-  if(canvasMode == 0){
+
+  if(animation_number == 0){
     ctx.strokeStyle = '#000099';
     ctx.beginPath();
     let r = s * 4;
@@ -216,7 +188,7 @@ function updateCanvas(){
     ctx.stroke();
   }
   // square test
-  if(canvasMode == 1){
+  if(animation_number == 1){
     ctx.strokeStyle = '#990000';
     let H = (LUT_H * 0.5)
     let W = (LUT_W * 0.5)
@@ -227,7 +199,7 @@ function updateCanvas(){
     ctx.stroke();
   }
   // rainbow test
-  if(canvasMode == 2){
+  if(animation_number == 2){
 
     scrollX -= 0.5 * speed;
     if(scrollX < -scrollW) scrollX = LUT_W;
@@ -239,19 +211,18 @@ function updateCanvas(){
   }
 
   // perlin
-  if(canvasMode == 3){
+  if(animation_number == 3){
     updatePerlin(frame);
   }
 
   // ripple
-  if(canvasMode == 4){
+  if(animation_number == 4){
     updateRipple(frame);
   }
-  
 }
 
 // pull canvas pixels and update strip
-function updateStrip(){
+function canvasToStrip(strip) {
   // get all pixels
   let ctxData = ctx.getImageData(0,0,LUT_W,LUT_H).data;
   // for each pixel in the lookup  
@@ -262,32 +233,28 @@ function updateStrip(){
       let r = ctxData[ctxIndex];
       let g = ctxData[ctxIndex+1];
       let b = ctxData[ctxIndex+2];
-      let w = pastel;//ctxData[ctxIndex+3];
+      let w = pastel; //ctxData[ctxIndex+3];
       let rgbw = (w << 24) | (r << 16) | (g << 8) | b;
-      // update pixelData
-      pixelData[LUT[pixelIndex]] = rgbw;
+      // update pixel data
+      strip.setPixel(LUT[pixelIndex], rgbw);
     }
   }
   // display mapped pixel data on LEDs
-  ws281x.render(pixelData);
-
+  strip.render();
 }
 
-
-function main() {
-  setupStrip();
+exports.updateCanvasAnimations =  (strip, animation_number) => {
   setupCanvas();
+  console.log(`setting animation canvas ${animation_number}`);
 
-  setInterval(function () {
-    // now = Date.now();
+  return setInterval(function () {
+    const start = Date.now();
     
-    updateCanvas();
-
-    updateStrip();  
-
-    // console.log(Date.now() - now,"ms per frame");
+    updateCanvas(animation_number);
+    canvasToStrip(strip);
+    console.log(`took ${Date.now() - start} to push to strip`)  
   }
   , 1000/30);
 }
 
-main();
+

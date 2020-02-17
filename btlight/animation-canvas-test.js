@@ -145,7 +145,6 @@ function updatePerlin(){
       ctxData[index+1] = gray;//G
       ctxData[index+2] = gray;//B
       ctxData[index+3] = pastel;//W
-      
     }
   }
   

@@ -90,7 +90,7 @@ function ripple() {
     
     ws281x.render(pixelData)}
 
-  , 1000/60);
+  , 1000/30);
 }
 
 ripple();

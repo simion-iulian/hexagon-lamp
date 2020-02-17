@@ -30,7 +30,7 @@ function rainbow() {
   ws281x.render(pixelData)
 	// console.log(Date.now() - now,"ms per frame");
 }
-  , 1000/60);
+  , 1000/30);
 }
 
 function colorwheel(pos) {

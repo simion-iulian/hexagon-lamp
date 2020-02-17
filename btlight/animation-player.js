@@ -1,4 +1,5 @@
 const Strip = require('./strip-controller');
+const {updateCanvasAnimations} = require ('./animation-canvas')
 
 class AnimationPlayer {
     constructor(strip) {
@@ -15,7 +16,8 @@ class AnimationPlayer {
         console.log("Animation player pattern: " + JSON.stringify(pattern))    
         switch(pattern.number) {
             case 1:
-                this.rainbow(pattern.speed, pattern.enable_pastel);
+                // this.rainbow(pattern.speed, pattern.enable_pastel);
+                this.animationInterval = updateCanvasAnimations(this.strip, 0);
         }
         this.isPlaying = true;
     }
