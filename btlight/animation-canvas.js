@@ -4,7 +4,8 @@ const p5               = require('./noise.js')
 // https://en.wikipedia.org/wiki/Hexagon#Parameters
 // "a hexagon with a long diagonal of 1.0000000 will have a distance of 0.8660254 between parallel sides."
 // this is handy to scale content on Y so it appears 1:1 on the hexagon, notice the hexagon in the LUT if you squint your eyes is not a 1:1 rectangle
-const HEX_HEIGHT_RATIO = 0.8660254;
+// const HEX_HEIGHT_RATIO = 0.8660254;
+const HEX_HEIGHT_RATIO = 0.8118988125;
 // full canvas dimensions
 const LUT_W = 15;
 const LUT_H = 16;
@@ -35,7 +36,7 @@ const canvas = createCanvas(LUT_W, LUT_H)
 // the canvas context
 const ctx = canvas.getContext('2d')
 // to be passed by AnimationPlayer/etc.
-let pastel = 64;
+let pastel = 10;
 let speed = 1;
 // animation tests
 let frame = 0;
@@ -80,14 +81,14 @@ function setupCanvas(){
   ctx.fillStyle = gradient;
 }
 
-function clearCanvas(){
+function clearCanvas() {
   // clear frame with black pixels
   ctx.clearRect(0,0,LUT_W,LUT_H);
   ctx.fillStyle = 'black';
   ctx.fillRect(0,0,LUT_W,LUT_H);
 }
 
-function updatePerlin(){
+function updatePerlin() {
   // get pixels
   let ctxImageData = ctx.getImageData(0,0,LUT_W,LUT_H);
   let ctxData = ctxImageData.data;
@@ -129,7 +130,7 @@ function updatePerlin(){
 
 function updateRipple(frame) {
   // every two frames add a ripple at a random location
-  if(frame % 60 == 0){
+  if(frame % 30 == 0){
     // speed means add more ripples
     for(let i = 0; i < speed; i++){
       let rx = Math.floor(2 + Math.random() * 10);
@@ -173,18 +174,24 @@ function array2D(cols,rows){
 }
 
 // main render loop for canvas animations
-function updateCanvas(animation_number){
+function updateCanvas(pattern) {
+  const animation_number = pattern.number - 1;
+  // console.log(typeof animation_number)
+
   frame++;
   clearCanvas();
   // draw something else
-  let s = (Math.sin(frame * 0.1 * speed) + 1.0);
+  let s = (Math.sin(frame * 0.1 * pattern.speed) + 1.0);
   // circle test
+  pastel = (pattern.enable_pastel == 0) ? 20 : 0
 
   if(animation_number == 0){
+    let circle_speed = (Math.sin(frame * 0.01 * pattern.speed) + 1.0);
     ctx.strokeStyle = '#000099';
     ctx.beginPath();
-    let r = s * 4;
-    ctx.ellipse(LUT_W * 0.5, LUT_H * 0.5, r, r * HEX_HEIGHT_RATIO, 0, 0, 2 * Math.PI);
+    let r = circle_speed * 4;
+    // ctx.ellipse(LUT_W * 0.5, LUT_H * 0.5, r, r * HEX_HEIGHT_RATIO, 0, 0, 2 * Math.PI);
+    ctx.ellipse(LUT_W * 0.5, LUT_H * 0.5, r, r, 0, 0, 2 * Math.PI);
     ctx.stroke();
   }
   // square test
@@ -233,7 +240,7 @@ function canvasToStrip(strip) {
       let r = ctxData[ctxIndex];
       let g = ctxData[ctxIndex+1];
       let b = ctxData[ctxIndex+2];
-      let w = pastel; //ctxData[ctxIndex+3];
+      let w = pastel // ctxData[ctxIndex+3];
       let rgbw = (w << 24) | (r << 16) | (g << 8) | b;
       // update pixel data
       strip.setPixel(LUT[pixelIndex], rgbw);
@@ -243,16 +250,16 @@ function canvasToStrip(strip) {
   strip.render();
 }
 
-exports.updateCanvasAnimations =  (strip, animation_number) => {
+exports.updateCanvasAnimations =  (strip, pattern) => {
   setupCanvas();
-  console.log(`setting animation canvas ${animation_number}`);
+  console.log(`setting animation canvas ${JSON.stringify(pattern)}`);
 
   return setInterval(function () {
     const start = Date.now();
     
-    updateCanvas(animation_number);
+    updateCanvas(pattern);
     canvasToStrip(strip);
-    console.log(`took ${Date.now() - start} to push to strip`)  
+    // console.log(`took ${Date.now() - start} to push to strip`)  
   }
   , 1000/30);
 }

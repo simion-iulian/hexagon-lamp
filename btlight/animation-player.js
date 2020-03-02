@@ -14,11 +14,11 @@ class AnimationPlayer {
             clearInterval(this.animationInterval);
 
         console.log("Animation player pattern: " + JSON.stringify(pattern))    
-        switch(pattern.number) {
-            case 1:
+        this.animationInterval = updateCanvasAnimations(this.strip, pattern);
+        // switch(pattern.number) {
+            // case 1:
                 // this.rainbow(pattern.speed, pattern.enable_pastel);
-                this.animationInterval = updateCanvasAnimations(this.strip, 0);
-        }
+        // }
         this.isPlaying = true;
     }
 
