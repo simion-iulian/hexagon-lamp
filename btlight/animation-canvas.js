@@ -37,7 +37,6 @@ const canvas = createCanvas(LUT_W, LUT_H)
 const ctx = canvas.getContext('2d')
 // to be passed by AnimationPlayer/etc.
 let pastel = 10;
-let speed = 1;
 // animation tests
 let frame = 0;
 let txt = 'Hello !';
@@ -57,7 +56,6 @@ let rows      = LUT_H;
 let cols    = LUT_W;
 let current   = array2D(LUT_W,LUT_H);
 let previous  = array2D(LUT_W,LUT_H);
-let dampening = 0.99;
 
 // setup keypress to test animations: Press ENTER from SSH to iterated through animations
 
@@ -88,11 +86,11 @@ function clearCanvas() {
   ctx.fillRect(0,0,LUT_W,LUT_H);
 }
 
-function updatePerlin() {
+function updatePerlin(speed = 1) {
   // get pixels
   let ctxImageData = ctx.getImageData(0,0,LUT_W,LUT_H);
   let ctxData = ctxImageData.data;
-
+  
   // Optional: adjust noise detail here
   // speed means faster and more complex noise pattern
   p5.noiseDetail(2 + speed,.61803398875);
@@ -128,30 +126,35 @@ function updatePerlin() {
   
 }
 
-function updateRipple(frame) {
+function updateRipple(frame, ripple_speed = 1, pastel = 30) {
   // every two frames add a ripple at a random location
-  if(frame % 30 == 0){
-    // speed means add more ripples
-    for(let i = 0; i < speed; i++){
-      let rx = Math.floor(2 + Math.random() * 10);
-      let ry = Math.floor(2 + Math.random() * 10);
+  const dampening = 0.92;
+  if(frame % 60 == 0){
+    // ripple_speed means add more ripples
+    for(let i = 0; i < ripple_speed; i++){
+      let rx = Math.floor(2 + Math.random() * 12);
+      let ry = Math.floor(2 + Math.random() * 12);
       previous[rx][ry] = 500;
     }
   }
-
+  
   let ctxImageData = ctx.getImageData(0,0,LUT_W,LUT_H);
   let ctxData = ctxImageData.data;
-
+  
   for (let i = 1; i < rows-1; i++) {
       for (let j = 1; j < cols-1; j++) {
-        current[i][j] = (previous[i-1][j] + previous[i+1][j] + previous[i][j-1] + previous[i][j+1]) * 0.5 - current[i][j];
+        current[i][j] = (previous[i-1][j] + 
+                         previous[i+1][j] + 
+                         previous[i][j-1] + 
+                         previous[i][j+1]) * 0.5 - 
+                         current[i][j];
 
         current[i][j] = current[i][j] * dampening;
 
         let index = (i + j * LUT_W) * 4;// RGBA
         let gray  = Math.floor(current[i][j]);
 
-        ctxData[index+0] = gray;
+        ctxData[index+0] = (255 - gray);
         ctxData[index+1] = gray;
         ctxData[index+2] = gray;
         ctxData[index+3] = pastel;
@@ -172,60 +175,39 @@ function array2D(cols,rows){
   }
   return result;
 }
-
+function updateCircle(speed = 1 , pastel = 0){
+  const circle_speed = (Math.sin(frame * 0.01 * speed) + 1.0);
+  ctx.strokeStyle = '#000099';
+  ctx.beginPath();
+  const r = circle_speed * 4;
+  // ctx.ellipse(LUT_W * 0.5, LUT_H * 0.5, r, r * HEX_HEIGHT_RATIO, 0, 0, 2 * Math.PI);
+  ctx.ellipse(LUT_W * 0.5, LUT_H * 0.5, r, r, 0, 0, 2 * Math.PI);
+  ctx.stroke();
+}
 // main render loop for canvas animations
 function updateCanvas(pattern) {
-  const animation_number = pattern.number - 1;
+  const animation_number = pattern.number;
+  const speed = pattern.speed
   // console.log(typeof animation_number)
 
   frame++;
   clearCanvas();
-  // draw something else
-  let s = (Math.sin(frame * 0.1 * pattern.speed) + 1.0);
   // circle test
   pastel = (pattern.enable_pastel == 0) ? 20 : 0
 
-  if(animation_number == 0){
-    let circle_speed = (Math.sin(frame * 0.01 * pattern.speed) + 1.0);
-    ctx.strokeStyle = '#000099';
-    ctx.beginPath();
-    let r = circle_speed * 4;
-    // ctx.ellipse(LUT_W * 0.5, LUT_H * 0.5, r, r * HEX_HEIGHT_RATIO, 0, 0, 2 * Math.PI);
-    ctx.ellipse(LUT_W * 0.5, LUT_H * 0.5, r, r, 0, 0, 2 * Math.PI);
-    ctx.stroke();
-  }
-  // square test
-  if(animation_number == 1){
-    ctx.strokeStyle = '#990000';
-    let H = (LUT_H * 0.5)
-    let W = (LUT_W * 0.5)
-    let r = s * H * 1.1
-    let rh = r * 0.5
-    ctx.beginPath();
-    ctx.rect(-rh + W, -rh + H, r, r * HEX_HEIGHT_RATIO);
-    ctx.stroke();
-  }
-  // rainbow test
-  if(animation_number == 2){
-
-    scrollX -= 0.5 * speed;
-    if(scrollX < -scrollW) scrollX = LUT_W;
-    
-    ctx.fillStyle = gradient;
-    ctx.strokeStyle = "rgba(1, 1, 1, 0)";
-    ctx.fillText(txt, scrollX, LUT_H * .75);
-    ctx.fill();
-  }
-
-  // perlin
-  if(animation_number == 3){
-    updatePerlin(frame);
+  if(animation_number == 2) {
+   updateCircle(speed, pastel);
   }
 
   // ripple
-  if(animation_number == 4){
-    updateRipple(frame);
+  if(animation_number == 3){
+    updateRipple(frame, speed);
   }
+
+  // // perlin
+  // if(animation_number == 4){
+  //   updatePerlin(frame);
+  // }
 }
 
 // pull canvas pixels and update strip

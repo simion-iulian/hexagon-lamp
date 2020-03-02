@@ -155,11 +155,11 @@ function updatePerlin(){
   
 }
 
-function updateRipple(frame) {
+function updateRipple(frame, ripple_speed = 1 ) {
   // every two frames add a ripple at a random location
   if(frame % 60 == 0){
     // speed means add more ripples
-    for(let i = 0; i < speed; i++){
+    for(let i = 0; i < ripple_speed; i++){
       let rx = Math.floor(2 + Math.random() * 10);
       let ry = Math.floor(2 + Math.random() * 10);
       previous[rx][ry] = 500;

@@ -1,15 +1,29 @@
 <!-- Generated template for the AnimationPickerComponent component -->
 <div>
-  <button id="1" ion-button (click)="updatePattern($event)">Set Animation</button>
-  <ion-item class="rainbow-slider" no-lines>
-        <ion-range 
-          background="dark" 
-          color="rgb(0,255,0)" 
-          min="1"
-          max="20" 
-          debounce="100" 
-          [(ngModel)]="rainbow_speed"
-          (ionChange)="setSpeed()">
-        </ion-range>
-    </ion-item>
+    <ion-list radio-group 
+    [(ngModel)]="pattern"
+    (ionChange)="setSpeed()"
+    >
+      <ion-item>
+        <ion-label>Rainbow</ion-label>
+        <ion-radio value="1" checked></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Circles</ion-label>
+        <ion-radio value="2"></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Ripple</ion-label>
+        <ion-radio value="3"></ion-radio>
+      </ion-item>
+      <ion-range
+            background="dark" 
+            color="rgb(0,255,0)" 
+            min="1"
+            max="20" 
+            debounce="100" 
+            [(ngModel)]="speed"
+            (ionChange)="setSpeed()">
+          </ion-range>
+    </ion-list>
 </div>

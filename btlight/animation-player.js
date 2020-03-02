@@ -10,15 +10,18 @@ class AnimationPlayer {
 
     // Public interface to use the player
     play(pattern) {
-        if(this.isPlaying == true)
+        if(this.isPlaying == true){
             clearInterval(this.animationInterval);
-
+        }
         console.log("Animation player pattern: " + JSON.stringify(pattern))    
-        this.animationInterval = updateCanvasAnimations(this.strip, pattern);
-        // switch(pattern.number) {
-            // case 1:
-                // this.rainbow(pattern.speed, pattern.enable_pastel);
-        // }
+        switch(pattern.number) {
+            case 1:
+                this.rainbow(pattern.speed, pattern.enable_pastel);
+                break;
+            default: 
+                this.updateCanvasAnimations(this.strip, pattern);
+                break;
+        }
         this.isPlaying = true;
     }
 
@@ -50,6 +53,9 @@ class AnimationPlayer {
         
         strip.render()
         }, 1000/30);
+    }
+    updateCanvasAnimations(strip, pattern){
+        this.animationInterval = updateCanvasAnimations(strip, pattern);
     }
 }
 

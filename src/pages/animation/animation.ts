@@ -17,6 +17,7 @@ import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
 export class AnimationPage {
   pattern: number;
   animationPicker : AnimationPicker;
+  relationship: string;
 
   constructor(
     public navCtrl: NavController, 
@@ -25,7 +26,7 @@ export class AnimationPage {
     private bleProvider: BluetoothProvider) {}
 
   setPattern(event){
-    console.log("Selecting pattern on page" + JSON.stringify(event));
+    console.log("Selecting pattern on page " + JSON.stringify(event));
     this.bleProvider.setPattern(event,
       () => console.log("Updated pattern"),
       () => console.log("Error updating pattern"))

@@ -11,7 +11,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
   templateUrl: 'animation-picker.html'
 })
 export class AnimationPicker {
-  rainbow_speed: number;
+  speed: number;
+  pattern: string;
 
   @Output() patternChange : EventEmitter<any> = new EventEmitter(); 
   constructor() {}
@@ -25,11 +26,17 @@ export class AnimationPicker {
     // this.patternChange.emit({pattern: 1, speed: this.rainbow_speed, enable_pastel: true});
   }
 
+  selectFn() {
+    console.log("selected button " + this.pattern);
+  }
+
   setSpeed() {
-    console.log("Speed is" + this.rainbow_speed)
+    console.log("Speed is " + this.speed);
+    console.log("pattern is " + this.pattern);
+
     this.patternChange.emit({
-      pattern_number: 1, 
-      speed: this.rainbow_speed, 
+      pattern_number: Number(this.pattern), 
+      speed: this.speed, 
       enable_pastel: true});    
   }
 }
