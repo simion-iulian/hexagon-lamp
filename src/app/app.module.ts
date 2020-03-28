@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { IonicApp, IonicErrorHandler, IonicModule, Tabs } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { BLE } from '@ionic-native/ble';
@@ -11,6 +11,7 @@ import { ColorPickerPage } from '../pages/colorpicker/colorpicker';
 import { HoneycombColorPicker } from '../components/honeycomb-color-picker/honeycomb-color-picker';
 import { AnimationPicker } from '../components/animation-picker/animation-picker';
 import { AnimationPage } from '../pages/animation/animation';
+import { TabsPage } from '../pages/tabs/tabs';
 import { BluetoothProvider } from '../providers/bluetooth/bluetooth';
 
 @NgModule({
@@ -20,7 +21,8 @@ import { BluetoothProvider } from '../providers/bluetooth/bluetooth';
     ColorPickerPage,
     HoneycombColorPicker,
     AnimationPicker,
-    AnimationPage
+    AnimationPage,
+    TabsPage
   ],
   imports: [
     BrowserModule,
@@ -31,7 +33,8 @@ import { BluetoothProvider } from '../providers/bluetooth/bluetooth';
     DuuuApp,
     ConnectionPage,
     ColorPickerPage,
-    AnimationPage
+    AnimationPage,
+    TabsPage
   ],
   providers: [
     StatusBar,
