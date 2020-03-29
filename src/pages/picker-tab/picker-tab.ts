@@ -2,6 +2,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { ToastController } from 'ionic-angular';
 import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
+import { HoneycombColorPicker } from '../../components/honeycomb-color-picker/honeycomb-color-picker';
 
 @IonicPage()
 @Component({
@@ -10,7 +11,7 @@ import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
 })
 export class PickerTabPage {
   peripheral: any = {};
-  colorPicker : 'HoneycombColorPicker';
+  colorPicker : HoneycombColorPicker;
   red: number;
   green: number;
   blue: number;
