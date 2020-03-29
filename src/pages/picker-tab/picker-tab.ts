@@ -1,24 +1,65 @@
-import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { ToastController } from 'ionic-angular';
+import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
 
-/**
- * Generated class for the PickerTabPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 @IonicPage()
 @Component({
   selector: 'page-picker-tab',
   templateUrl: 'picker-tab.html',
 })
 export class PickerTabPage {
+  peripheral: any = {};
+  colorPicker : 'HoneycombColorPicker';
+  red: number;
+  green: number;
+  blue: number;
+  white: number;
+  power: boolean;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, 
+              public navParams: NavParams,
+              private bleProvider: BluetoothProvider,
+              private toastCtrl: ToastController,
+              ) {} 
+
+  onDeviceDisconnected() {
+    let toast = this.toastCtrl.create({
+      message: 'The peripheral unexpectedly disconnected',
+      duration: 3000,
+      position: 'center'
+    });
+
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
+
+    toast.present();
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad PickerTabPage');
+  updateModelColors(color) {
+    this.red = color.R;
+    this.green = color.G;
+    this.blue = color.B;
+    this.white = color.W;
   }
 
+  sendColorToLamp(data, successCallback, failCallback){
+    this.bleProvider.sendColor(data,successCallback,failCallback);
+  }
+
+  updateLampColor(color){    
+    this.updateModelColors(color);
+    this.sendColorToLamp(color,
+      () => console.log("Updated with: " + JSON.stringify(color)),
+      () => console.log("Error updating"));
+  }
+
+  setColor(event){
+    this.updateLampColor({R: this.red, G: this.green, B:this.blue, W: this.white});
+  }
+
+  onPowerSwitchChange(event) {
+    this.bleProvider.onOff(this.power);
+  }
 }
