@@ -1,5 +1,15 @@
 page-tabs {
-    .below-connection-bar {
-        margin-top: 56px;
-      }
+  .below-connection-bar {
+    margin-top: 56px;
+  }
+
+  .tabs-md .tabbar  {
+    background: color($colors, header-bg);
+    color: color($colors, sun-yellow);
+
+  }
+  
+  ion-tab {
+    font-size: 3rem;
+  }
 }
