@@ -1,15 +1,15 @@
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
-import { HoneycombColorPicker } from '../../components/honeycomb-color-picker/honeycomb-color-picker';
-import { AnimationPage } from '../animation/animation';
 import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
+import { HoneycombColorPicker } from '../../components/honeycomb-color-picker/honeycomb-color-picker';
 
+@IonicPage()
 @Component({
-  selector: 'page-colorpicker',
-  templateUrl: 'colorpicker.html',
+  selector: 'page-picker-tab',
+  templateUrl: 'picker-tab.html',
 })
-export class ColorPickerPage {
+export class PickerTabPage {
   peripheral: any = {};
   colorPicker : HoneycombColorPicker;
   red: number;
@@ -17,7 +17,6 @@ export class ColorPickerPage {
   blue: number;
   white: number;
   power: boolean;
-  animationPage = AnimationPage;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,

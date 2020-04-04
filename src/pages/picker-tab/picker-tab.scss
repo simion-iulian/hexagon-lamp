@@ -1,0 +1,50 @@
+page-picker-tab {
+    .item {
+      min-height: 0.5rem; /* <- this can be whatever you need */
+    }
+  
+    .below-connection-bar {
+      margin-top: 56px;
+    }
+    
+    .dark-grey-bg {
+      // background: linear-gradient(0.25turn,rgb(145,31,145) 0%, rgb(250,219,10) 50%, rgb(145,31,145) 100%);
+      background: color($colors, header-bg);
+    }
+
+    .red-slider {
+      background: color($colors, header-bg);
+      height: 8.33%;
+    }
+
+    .red-slider .range-bar {
+      background: color($colors, red-slider-bar);
+    }
+
+    .green-slider{
+      background: color($colors, header-bg);
+      height: 8.33%;
+    }
+  
+    .green-slider .range-bar{
+      background: color($colors, green-slider-bar);
+    }
+  
+    .blue-slider{
+      background: color($colors, header-bg);
+      height: 8.33%;
+    }
+  
+    .blue-slider .range-bar{
+      background: color($colors, blue-slider-bar);
+    }
+    .white-slider{
+      background: color($colors, header-bg);
+      height: 8.33%;
+    }
+    
+    .power{
+      height: 8.33%;
+      background: #111111;
+    }
+  }

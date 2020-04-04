@@ -3,18 +3,12 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AnimationPicker } from '../../components/animation-picker/animation-picker';
 import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
 
-/**
- * Generated class for the AnimationPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 @IonicPage()
 @Component({
-  selector: 'page-animation',
-  templateUrl: 'animation.html',
+  selector: 'page-animation-tab',
+  templateUrl: 'animation-tab.html',
 })
-export class AnimationPage {
+export class AnimationTabPage {
   pattern: number;
   animationPicker : AnimationPicker;
   relationship: string;

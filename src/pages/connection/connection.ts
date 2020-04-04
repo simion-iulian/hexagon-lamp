@@ -2,8 +2,7 @@ import { BLE } from '@ionic-native/ble';
 import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 
-import { ColorPickerPage } from '../colorpicker/colorpicker';
-import { AnimationPage } from '../animation/animation';
+import { TabsPage } from '../tabs/tabs';
 import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
 
 const NEOPIXEL_SERVICE = 'ccc0';
@@ -46,7 +45,7 @@ export class ConnectionPage {
 
   deviceSelected(device) {
     this.bleProvider.connectDevice(device);
-    this.navCtrl.push(AnimationPage);
+    this.navCtrl.push(TabsPage);
   }
 
   showAlert(title, message) {

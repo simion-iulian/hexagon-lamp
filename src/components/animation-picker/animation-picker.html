@@ -1,22 +1,22 @@
 <!-- Generated template for the AnimationPickerComponent component -->
 <div>
-    <ion-list radio-group 
+    <ion-list radio-group
     [(ngModel)]="pattern"
     (ionChange)="setSpeed()"
     >
-      <ion-item>
+      <ion-item class="dark" no-lines>
         <ion-label>Rainbow</ion-label>
         <ion-radio value="1" checked></ion-radio>
       </ion-item>
-      <ion-item>
+      <ion-item class="dark" no-lines>
         <ion-label>Circles</ion-label>
         <ion-radio value="2"></ion-radio>
       </ion-item>
-      <ion-item>
+      <ion-item class="dark" no-lines>
         <ion-label>Ripple</ion-label>
         <ion-radio value="3"></ion-radio>
       </ion-item>
-      <ion-range
+      <ion-range class="animation-slider"
             background="dark" 
             color="rgb(0,255,0)" 
             min="1"

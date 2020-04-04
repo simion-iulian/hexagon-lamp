@@ -1,0 +1,35 @@
+
+<ion-content class="padding">
+  <ion-item class="dark-grey-bg" no-lines>
+      <honeycomb-color-picker (colorChange)='updateLampColor($event)'></honeycomb-color-picker>
+  </ion-item>
+
+  <ion-item class="red-slider" no-lines>
+      <ion-range background="dark" color="red-slider-color" max="255" debounce="25" [(ngModel)]="red"
+                 (ionChange)="setColor($event)">
+      </ion-range>
+  </ion-item>
+
+  <ion-item class="green-slider" no-lines>
+      <ion-range background="dark" color="green-slider-color" max="255" debounce="25" [(ngModel)]="green"
+                 (ionChange)="setColor($event)">
+      </ion-range>
+  </ion-item>
+
+  <ion-item  class="blue-slider" no-lines>
+      <ion-range background="dark" color="blue-slider-color" max="255" debounce="25" [(ngModel)]="blue"  (ionChange)="setColor($event)">
+      </ion-range>
+  </ion-item>
+
+  <ion-item class="white-slider" no-lines>
+      <ion-range background="light" color="white-slider-color" max="255" debounce="25" [(ngModel)]="white"
+                 (ionChange)="setColor($event)">
+      </ion-range>
+  </ion-item>
+
+  <ion-item class="power" no-lines>
+      <ion-label color="light">Power</ion-label>
+      <ion-toggle background="rgb(88,88,88)" [(ngModel)]="power"
+                  (ngModelChange)="onPowerSwitchChange($event);"></ion-toggle>
+  </ion-item>
+</ion-content>
