@@ -15,11 +15,11 @@ export class PickerTabPage {
   green: number;
   blue: number;
   white: number;
-  power: boolean;
+  power: boolean = true;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
-              private bleProvider: BluetoothProvider,
+              private ble: BluetoothProvider,
               private toastCtrl: ToastController,
               ) {} 
 
@@ -45,21 +45,30 @@ export class PickerTabPage {
   }
 
   sendColorToLamp(data, successCallback, failCallback){
-    this.bleProvider.sendColor(data,successCallback,failCallback);
+    this.ble.sendColor(data,successCallback,failCallback);
   }
 
-  updateLampColor(color){    
+  updateLampColor(color) {
     this.updateModelColors(color);
     this.sendColorToLamp(color,
       () => console.log("Updated with: " + JSON.stringify(color)),
       () => console.log("Error updating"));
+    if(!this.power) {
+      this.power = true
+      this.updatePower(true)
+    }      
   }
 
-  setColor(event){
+  setColor(event) {
     this.updateLampColor({R: this.red, G: this.green, B:this.blue, W: this.white});
   }
 
-  onPowerSwitchChange(event) {
-    this.bleProvider.onOff(this.power);
+  updatePower(event) {
+    this.ble.onOff(this.power);
+  }
+  
+  ionViewDidLoad(){
+    console.log(`picker tab loaded ${Date.now()}`)
+    setTimeout(()=> {this.ble.isConnected()}, 1000);
   }
 }

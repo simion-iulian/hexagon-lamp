@@ -12,14 +12,14 @@ export class TabsPage {
   animations_tab = 'AnimationTabPage'
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
-              private bleProvider: BluetoothProvider) {
+              private ble: BluetoothProvider) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad TabsPage');
+    console.log(`tabs loaded ${Date.now()}`);
   }
 
   ionViewWillLeave() {
-    this.bleProvider.disconnectDevice();
+    this.ble.disconnectDevice();
   }
 }

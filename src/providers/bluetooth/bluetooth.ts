@@ -21,9 +21,29 @@ export class BluetoothProvider {
   connectDevice(device) {
     console.log('Creating device connection')
     this.ble.connect(device.id).subscribe(
-      peripheral => this.peripheral = peripheral,
+      peripheral => this.onConnected(peripheral),
       peripheral => this.onDeviceDisconnected(peripheral)
     );
+  }
+
+  onConnected(peripheral){
+    this.peripheral = peripheral;
+    console.log(`connected to peripheral ${Date.now()}`);
+  }
+
+  isConnected(){
+    this.ble.isConnected(this.peripheral.id).then(
+      () => { console.log(`ble connected ${Date.now()}`); },
+      () => { console.log(`ble not connected ${Date.now()}`); }
+    );
+  }
+
+  getColorFromDevice(updateUIcallback){
+    this.ble
+      .read(this.peripheral.id, NEOPIXEL_SERVICE, COLOR)
+      .then(
+        (colorDataFromDevice) => console.log(`got colors: ${colorDataFromDevice}`), 
+        (err) => {console.log(`error getting color: ${err}`)})
   }
 
   disconnectDevice(){

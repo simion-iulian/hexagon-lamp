@@ -11,7 +11,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
   templateUrl: 'animation-picker.html'
 })
 export class AnimationPicker {
-  speed: number;
+  speed: number = 1;
   pattern: string;
 
   @Output() patternChange : EventEmitter<any> = new EventEmitter(); 

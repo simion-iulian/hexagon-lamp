@@ -3,18 +3,18 @@ const Strip = require('./strip-controller');
 const AnimationPlayer = require('./animation-player.js');
 
 const strip = new Strip();
-const lampName = "⬣";
+const lampName = "Heks";
 let lampState = {
   "r":0,
   "g":0,
   "b":0,
   "w":100,
   "pattern":1,
+  "speed": 1,
   "power":0,
-  "brightness":226
 }
-console.log(JSON.stringify(lampState));
 
+console.log(JSON.stringify(lampState));
 const animationPlayer = new AnimationPlayer(strip);
 
 // ---- trap the SIGINT and reset before exit
@@ -24,7 +24,7 @@ process.on('SIGINT', function () {
   process.nextTick(function () { process.exit(0); });
 });
 
-function loadState(){
+function loadState() {
   const r = lampState.r, g = lampState.g, b = lampState.b, w = lampState.w,
   patternState = lampState.pattern,
   switchState = lampState.power;
@@ -154,7 +154,7 @@ class ColorCharacteristic extends bleno.Characteristic {
   }
   onReadRequest(offset, callback) {
     try {
-        let data = new Buffer([lampState.r,lampState.g,lampState.b]);
+        let data = new Buffer([lampState.r,lampState.g,lampState.b, lampState.w]);
         callback(this.RESULT_SUCCESS, data);
     } catch (err) {
         console.error(err);
