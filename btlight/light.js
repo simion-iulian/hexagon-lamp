@@ -192,8 +192,7 @@ class PatternCharacteristic extends bleno.Characteristic {
 
       const pattern = {
         "number": data[0],
-        "speed" : data[1],
-        "enable_pastel" : data[2]
+        "speed" : data[1]
       }
 
       animationPlayer.play(pattern);
@@ -272,9 +271,6 @@ bleno.on("servicesSetError", err => console.log("Bleno: servicesSetError"));
 //Animations
 //State 1 - Rainbow
 
-function rgb2Int(r, g, b) {
-  return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
-}
 
 function rgbw2Int(r, g, b, w) {
   return ((w & 0xff) << 24) + 

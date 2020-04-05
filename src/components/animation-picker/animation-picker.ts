@@ -23,7 +23,6 @@ export class AnimationPicker {
 
     this.patternChange.emit({
       pattern_number: Number(this.pattern), 
-      speed: this.speed, 
-      enable_pastel: true});    
+      speed: this.speed});    
   }
 }

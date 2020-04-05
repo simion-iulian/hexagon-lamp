@@ -16,7 +16,7 @@ class AnimationPlayer {
         console.log("Animation player pattern: " + JSON.stringify(pattern))    
         switch(pattern.number) {
             case 1:
-                this.rainbow(pattern.speed, pattern.enable_pastel);
+                this.rainbow(pattern.speed);
                 break;
             default: 
                 this.updateCanvasAnimations(this.strip, pattern);
@@ -39,9 +39,8 @@ class AnimationPlayer {
         else { pos -= 170; return rgb2Int(pos * 3, 255 - pos * 3, 0); }
     }
 
-    rainbow(speed, enable_pastel){
+    rainbow(speed, pastel = 0){
         var offset = 0;
-        const pastel = (enable_pastel == 1) ? 80 : 0
         const strip = this.strip;
         const colorwheel = this.colorwheel;
         this.animationInterval = setInterval(function () 

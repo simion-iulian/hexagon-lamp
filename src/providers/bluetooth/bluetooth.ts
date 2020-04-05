@@ -99,10 +99,7 @@ export class BluetoothProvider {
 
   setPattern(pattern, success, fail) {
     console.log("setting pattern in provider " + JSON.stringify(pattern));
-    let data = new Uint8Array(
-      [pattern.pattern_number, 
-       pattern.speed, 
-       pattern.enable_pastel]);
+    let data = new Uint8Array([pattern.pattern_number, pattern.speed]);
     this.ble
       .write(this.peripheral.id, NEOPIXEL_SERVICE, PATTERN, data.buffer)
       .then(success,fail);

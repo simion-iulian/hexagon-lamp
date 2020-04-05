@@ -39,7 +39,6 @@ const ctx = canvas.getContext('2d')
 let pastel = 10;
 // animation tests
 let frame = 0;
-let txt = 'Hello !';
 let gradient;
 // perlin animation vars
 // animation is a port of https://processing.org/examples/noise3d.html
@@ -56,26 +55,6 @@ let current   = array2D(LUT_W,LUT_H);
 let previous  = array2D(LUT_W,LUT_H);
 
 // setup keypress to test animations: Press ENTER from SSH to iterated through animations
-
-// Canvas setup
-function setupCanvas(){
-  // you can use most Canvas function so easy text/css colours (e.g. rgb(r,g,b), rgba(r,g,b,1.0), hsl(), etc.)
-  ctx.fillStyle = 'black';
-  ctx.fillRect(0,0,LUT_W,LUT_H);
-  ctx.font = '12px serif';
-  scrollW = ctx.measureText(txt).width;
-  gradient = ctx.createLinearGradient(0, 0, LUT_W, 0);
-  // rainbow gradient ROGVAIV / ROYGBIV
-  let step = 1.0 / 7.0;
-  gradient.addColorStop(step * 0,"red");
-  gradient.addColorStop(step * 1,"orange");
-  gradient.addColorStop(step * 2,"yellow");
-  gradient.addColorStop(step * 3,"green");
-  gradient.addColorStop(step * 4,"blue");
-  gradient.addColorStop(step * 5,"indigo");
-  gradient.addColorStop(step * 6,"violet");
-  ctx.fillStyle = gradient;
-}
 
 function clearCanvas() {
   // clear frame with black pixels
@@ -148,7 +127,6 @@ function updateRipple(frame, ripple_speed = 1, pastel = 30) {
         const velocity = (- current[i][j])*s_to_v;
 
         current[i][j] = smoothed*2 + velocity;
-
         current[i][j] = current[i][j] * dampening;
 
         let index = (i + j * LUT_W) * 4;// RGBA
@@ -175,7 +153,7 @@ function array2D(cols,rows){
   }
   return result;
 }
-function updateCircle(speed = 1 , pastel = 0){
+function updateCircle(speed = 1){
   const circle_speed = (Math.sin(frame * 0.01 * speed) + 1.0);
   ctx.strokeStyle = '#000099';
   ctx.beginPath();
@@ -193,10 +171,9 @@ function updateCanvas(pattern) {
   frame++;
   clearCanvas();
   // circle test
-  pastel = (pattern.enable_pastel == 0) ? 20 : 0
 
   if(animation_number == 2) {
-   updateCircle(speed, pastel);
+   updateCircle(speed);
   }
 
   // ripple
@@ -233,15 +210,11 @@ function canvasToStrip(strip) {
 }
 
 exports.updateCanvasAnimations =  (strip, pattern) => {
-  setupCanvas();
   console.log(`setting animation canvas ${JSON.stringify(pattern)}`);
 
   return setInterval(function () {
-    const start = Date.now();
-    
     updateCanvas(pattern);
     canvasToStrip(strip);
-    // console.log(`took ${Date.now() - start} to push to strip`)  
   }
   , 1000/30);
 }
