@@ -154,6 +154,7 @@ class ColorCharacteristic extends bleno.Characteristic {
   }
   onReadRequest(offset, callback) {
     try {
+        console.log(`sending data to app`)
         let data = new Buffer([lampState.r,lampState.g,lampState.b, lampState.w]);
         callback(this.RESULT_SUCCESS, data);
     } catch (err) {

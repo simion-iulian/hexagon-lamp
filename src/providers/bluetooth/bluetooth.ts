@@ -22,7 +22,7 @@ export class BluetoothProvider {
     console.log('Creating device connection')
     this.ble.connect(device.id).subscribe(
       peripheral => this.onConnected(peripheral),
-      peripheral => this.onDeviceDisconnected(peripheral)
+      peripheral => this.onDeviceDisconnected()
     );
   }
 
@@ -33,16 +33,30 @@ export class BluetoothProvider {
 
   isConnected(){
     this.ble.isConnected(this.peripheral.id).then(
-      () => { console.log(`ble connected ${Date.now()}`); },
-      () => { console.log(`ble not connected ${Date.now()}`); }
+      () => { console.log(`ble connected ${Date.now()}`);},
+      () => { console.log(`ble not connected ${Date.now()}`);}
     );
   }
 
+  bluetoothDataToJson(data){
+    return new Uint8Array(data);
+  }
+
   getColorFromDevice(updateUIcallback){
+    console.log(`getting color from device`)
     this.ble
       .read(this.peripheral.id, NEOPIXEL_SERVICE, COLOR)
       .then(
-        (colorDataFromDevice) => console.log(`got colors: ${colorDataFromDevice}`), 
+        data => {
+          const colorData = this.bluetoothDataToJson(data);
+          console.log(`got ${JSON.stringify(colorData)}`)
+          console.log(`got ${colorData}`)
+          updateUIcallback({
+            R: colorData[0], 
+            G: colorData[1], 
+            B: colorData[2], 
+            W: colorData[3]})
+        }, 
         (err) => {console.log(`error getting color: ${err}`)})
   }
 
@@ -54,7 +68,7 @@ export class BluetoothProvider {
     )
   }
 
-  onDeviceDisconnected(peripheral) {
+  onDeviceDisconnected() {
     let toast = this.toastCtrl.create({
       message: 'The peripheral unexpectedly disconnected',
       duration: 3000,

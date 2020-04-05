@@ -53,8 +53,8 @@ export class ConnectionPage {
     
     this.bleProvider.connectDevice(device);
     
-    setTimeout(() => {this.navCtrl.push(TabsPage)},1500);
-    setTimeout(() => {connectingLoader.dismiss()}, 3000);
+    setTimeout(() => {this.navCtrl.push(TabsPage)},2500);
+    setTimeout(() => {connectingLoader.dismiss()}, 3500);
   }
 
   showAlert(title, message) {

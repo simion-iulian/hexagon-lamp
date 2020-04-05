@@ -1,6 +1,5 @@
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Component } from '@angular/core';
-import { ToastController } from 'ionic-angular';
 import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
 import { HoneycombColorPicker } from '../../components/honeycomb-color-picker/honeycomb-color-picker';
 
@@ -20,22 +19,7 @@ export class PickerTabPage {
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private ble: BluetoothProvider,
-              private toastCtrl: ToastController,
               ) {} 
-
-  onDeviceDisconnected() {
-    let toast = this.toastCtrl.create({
-      message: 'The peripheral unexpectedly disconnected',
-      duration: 3000,
-      position: 'center'
-    });
-
-    toast.onDidDismiss(() => {
-      console.log('Dismissed toast');
-    });
-
-    toast.present();
-  }
 
   updateModelColors(color) {
     this.red = color.R;
@@ -69,6 +53,9 @@ export class PickerTabPage {
   
   ionViewDidLoad(){
     console.log(`picker tab loaded ${Date.now()}`)
-    setTimeout(()=> {this.ble.isConnected()}, 1000);
+    setTimeout(
+      ()=> {this.ble.getColorFromDevice(
+        (color) => { this.updateModelColors(color)}
+    )}, 700);
   }
 }
