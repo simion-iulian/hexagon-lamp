@@ -10,7 +10,6 @@ import { HoneycombColorPicker } from '../../components/honeycomb-color-picker/ho
   templateUrl: 'picker-tab.html',
 })
 export class PickerTabPage {
-  peripheral: any = {};
   colorPicker : HoneycombColorPicker;
   red: number;
   green: number;

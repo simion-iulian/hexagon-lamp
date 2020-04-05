@@ -17,19 +17,6 @@ export class AnimationPicker {
   @Output() patternChange : EventEmitter<any> = new EventEmitter(); 
   constructor() {}
 
-  updatePattern(event) {
-    console.log("updating in picker")
-    console.log(JSON.stringify(event));
-    console.log(JSON.stringify(event.target));
-    console.log(JSON.stringify(event.target.id));
-
-    // this.patternChange.emit({pattern: 1, speed: this.rainbow_speed, enable_pastel: true});
-  }
-
-  selectFn() {
-    console.log("selected button " + this.pattern);
-  }
-
   setSpeed() {
     console.log("Speed is " + this.speed);
     console.log("pattern is " + this.pattern);

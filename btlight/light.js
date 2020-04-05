@@ -3,7 +3,7 @@ const Strip = require('./strip-controller');
 const AnimationPlayer = require('./animation-player.js');
 
 const strip = new Strip();
-const lampName = "Heks 2";
+const lampName = "⬣";
 let lampState = {
   "r":0,
   "g":0,

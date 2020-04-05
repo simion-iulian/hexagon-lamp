@@ -21,13 +21,17 @@ export class BluetoothProvider {
   connectDevice(device) {
     console.log('Creating device connection')
     this.ble.connect(device.id).subscribe(
-      peripheral => this.onConnected(peripheral),
+      peripheral => this.peripheral = peripheral,
       peripheral => this.onDeviceDisconnected(peripheral)
     );
   }
 
-  onConnected(peripheral){
-    this.peripheral = peripheral;
+  disconnectDevice(){
+    console.log('disconnecting Bluetooth');
+    this.ble.disconnect(this.peripheral.id).then(
+      () => console.log('Disconnected ' + JSON.stringify(this.peripheral)),
+      () => console.log('ERROR disconnecting ' + JSON.stringify(this.peripheral))
+    )
   }
 
   onDeviceDisconnected(peripheral) {
@@ -60,7 +64,7 @@ export class BluetoothProvider {
   }
 
   setPattern(pattern, success, fail) {
-    console.log("setting patter in provider " + JSON.stringify(pattern));
+    console.log("setting pattern in provider " + JSON.stringify(pattern));
     let data = new Uint8Array(
       [pattern.pattern_number, 
        pattern.speed, 
