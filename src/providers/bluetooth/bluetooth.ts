@@ -22,15 +22,70 @@ export class BluetoothProvider {
     console.log('Creating device connection')
     this.ble.connect(device.id).subscribe(
       peripheral => this.onConnected(peripheral),
-      peripheral => this.onDeviceDisconnected(peripheral)
+      peripheral => this.onDeviceDisconnected()
     );
   }
 
   onConnected(peripheral){
     this.peripheral = peripheral;
+    console.log(`connected to peripheral ${Date.now()}`);
   }
 
-  onDeviceDisconnected(peripheral) {
+  isConnected(){
+    this.ble.isConnected(this.peripheral.id).then(
+      () => { console.log(`ble connected ${Date.now()}`);},
+      () => { console.log(`ble not connected ${Date.now()}`);}
+    );
+  }
+
+  bluetoothDataToJson(data){
+    return new Uint8Array(data);
+  }
+
+  getColorFromDevice(updateUIcallback){
+    console.log(`getting color from device`)
+    this.ble
+      .read(this.peripheral.id, NEOPIXEL_SERVICE, COLOR)
+      .then(
+        data => {
+          const colorData = this.bluetoothDataToJson(data);
+          console.log(`got ${JSON.stringify(colorData)}`)
+          console.log(`got ${colorData}`)
+          updateUIcallback({
+            R: colorData[0], 
+            G: colorData[1], 
+            B: colorData[2], 
+            W: colorData[3]})
+        }, 
+        (err) => {console.log(`error getting color: ${err}`)})
+  }
+
+  getPatternFromDevice(updateUIcallback){
+    console.log(`getting pattern from device`)
+    this.ble
+      .read(this.peripheral.id, NEOPIXEL_SERVICE, PATTERN)
+      .then(
+        data => {
+          const patternData = this.bluetoothDataToJson(data);
+          console.log(`got ${JSON.stringify(patternData)}`)
+          console.log(`got ${patternData}`)
+          updateUIcallback({
+            number: patternData[0].toString(), 
+            speed: patternData[1], 
+          })
+        }, 
+        (err) => {console.log(`error getting color: ${err}`)})
+  }
+
+  disconnectDevice(){
+    console.log('disconnecting Bluetooth');
+    this.ble.disconnect(this.peripheral.id).then(
+      () => console.log('Disconnected ' + JSON.stringify(this.peripheral)),
+      () => console.log('ERROR disconnecting ' + JSON.stringify(this.peripheral))
+    )
+  }
+
+  onDeviceDisconnected() {
     let toast = this.toastCtrl.create({
       message: 'The peripheral unexpectedly disconnected',
       duration: 3000,
@@ -60,11 +115,8 @@ export class BluetoothProvider {
   }
 
   setPattern(pattern, success, fail) {
-    console.log("setting patter in provider " + JSON.stringify(pattern));
-    let data = new Uint8Array(
-      [pattern.pattern_number, 
-       pattern.speed, 
-       pattern.enable_pastel]);
+    console.log("setting pattern in provider " + JSON.stringify(pattern));
+    let data = new Uint8Array([pattern.pattern_number, pattern.speed]);
     this.ble
       .write(this.peripheral.id, NEOPIXEL_SERVICE, PATTERN, data.buffer)
       .then(success,fail);

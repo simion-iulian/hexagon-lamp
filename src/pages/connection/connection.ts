@@ -1,6 +1,6 @@
 import { BLE } from '@ionic-native/ble';
 import { Component, NgZone } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import {  LoadingController, NavController, AlertController } from 'ionic-angular';
 
 import { TabsPage } from '../tabs/tabs';
 import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
@@ -14,7 +14,8 @@ const NEOPIXEL_SERVICE = 'ccc0';
 export class ConnectionPage {
   devices: any[] = [];
 
-  constructor(public navCtrl: NavController, 
+  constructor(public navCtrl: NavController,
+              public loadingCtrl: LoadingController, 
               private ble: BLE,
               private bleProvider: BluetoothProvider,
               private alertCtrl: AlertController,
@@ -22,7 +23,6 @@ export class ConnectionPage {
   }
 
   ionViewDidEnter(){
-    console.log('ionViewDidEnter');
     this.scan();
   }
 
@@ -44,8 +44,15 @@ export class ConnectionPage {
   }
 
   deviceSelected(device) {
+    let connectingLoader = this.loadingCtrl.create({
+      content: 'Connecting to the lamp'
+    });
+    connectingLoader.present();
+    
     this.bleProvider.connectDevice(device);
-    this.navCtrl.push(TabsPage);
+    
+    setTimeout(() => {this.navCtrl.push(TabsPage)},2500);
+    setTimeout(() => {connectingLoader.dismiss()}, 3500);
   }
 
   showAlert(title, message) {

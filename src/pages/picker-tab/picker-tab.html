@@ -29,7 +29,7 @@
 
   <ion-item class="power" no-lines>
       <ion-label color="light">Power</ion-label>
-      <ion-toggle background="rgb(88,88,88)" [(ngModel)]="power"
-                  (ngModelChange)="onPowerSwitchChange($event);"></ion-toggle>
+      <ion-toggle checked background="rgb(88,88,88)" [(ngModel)]="power"
+                  (ngModelChange)="updateLampPower($event);"></ion-toggle>
   </ion-item>
 </ion-content>

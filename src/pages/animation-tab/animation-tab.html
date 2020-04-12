@@ -5,7 +5,27 @@
   Ionic pages and navigation.
 -->
 
-
 <ion-content class="dark-grey-bg">
-  <animation-picker (patternChange)="setPattern($event)">Set Animation</animation-picker> 
+  <ion-list radio-group 
+  [(ngModel)]="pattern" 
+  (ionChange)="updatePattern($event)">
+    <ion-item class="dark" no-lines>
+      <ion-label>Rainbow</ion-label>
+      <ion-radio value="1" checked></ion-radio>
+    </ion-item>
+    <ion-item class="dark" no-lines>
+      <ion-label>Circles</ion-label>
+      <ion-radio value="2"></ion-radio>
+    </ion-item>
+    <ion-item class="dark" no-lines>
+      <ion-label>Ripple</ion-label>
+      <ion-radio value="3"></ion-radio>
+    </ion-item>
+  </ion-list>
+  <ion-range class="animation-slider"
+     background="dark" 
+     color="rgb(0,255,0)" 
+     min="1" max="20" debounce="100"
+      [(ngModel)]="speed" (ionChange)="updatePattern($event)">
+    </ion-range>
 </ion-content>
