@@ -1,6 +1,5 @@
 import { Component, NgZone } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { AnimationPicker } from '../../components/animation-picker/animation-picker';
 import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
 
 @IonicPage()
@@ -9,9 +8,8 @@ import { BluetoothProvider } from '../../providers/bluetooth/bluetooth';
   templateUrl: 'animation-tab.html',
 })
 export class AnimationTabPage {
-  pattern: number;
-  animationPicker : AnimationPicker;
-  relationship: string;
+  speed: number;
+  pattern: string;
 
   constructor(
     public navCtrl: NavController, 
@@ -19,10 +17,22 @@ export class AnimationTabPage {
     public ngZone: NgZone,
     private bleProvider: BluetoothProvider) {}
 
-  setPattern(event){
-    console.log("Selecting pattern on page " + JSON.stringify(event));
-    this.bleProvider.setPattern(event,
+  updatePattern(){
+    const patternData = {
+      pattern_number: Number(this.pattern), 
+      speed: this.speed
+    }
+    this.bleProvider.setPattern(patternData,
       () => console.log("Updated pattern"),
       () => console.log("Error updating pattern"))
   }
+
+  ionViewDidLoad(){
+    this.bleProvider.getPatternFromDevice((pattern) => {
+      console.log(`got pattern in tab: ${JSON.stringify(pattern)}`);
+      this.pattern = pattern.number;
+      this.speed = pattern.speed;
+    });
+  }
+
 }

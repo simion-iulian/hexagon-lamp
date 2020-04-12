@@ -1,5 +1,15 @@
 page-animation-tab {
-    .dark-grey-bg{
+    .dark-grey-bg {
         background: color($colors, dark);
-    } 
+    }
+
+    .animation-slider {
+        background: color($colors, dark);
+        height: 20%;
+    }
+  
+    .dark {
+      color: color($colors, sun-yellow);
+      background-color: color($colors, dark);  
+    }
 }
