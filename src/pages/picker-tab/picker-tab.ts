@@ -5,21 +5,22 @@ import { HoneycombColorPicker } from '../../components/honeycomb-color-picker/ho
 
 @IonicPage()
 @Component({
-  selector: 'page-picker-tab',
-  templateUrl: 'picker-tab.html',
+  selector: "page-picker-tab",
+  templateUrl: "picker-tab.html",
 })
 export class PickerTabPage {
-  colorPicker : HoneycombColorPicker;
+  colorPicker: HoneycombColorPicker;
   red: number;
   green: number;
   blue: number;
   white: number;
   power: boolean = true;
 
-  constructor(public navCtrl: NavController, 
-              public navParams: NavParams,
-              private ble: BluetoothProvider,
-              ) {} 
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private ble: BluetoothProvider
+  ) {}
 
   updateModelColors(color) {
     this.red = color.R;
@@ -28,34 +29,42 @@ export class PickerTabPage {
     this.white = color.W;
   }
 
-  sendColorToLamp(data, successCallback, failCallback){
-    this.ble.sendColor(data,successCallback,failCallback);
+  sendColorToLamp(data, successCallback, failCallback) {
+    this.ble.sendColor(data, successCallback, failCallback);
   }
 
   updateLampColor(color) {
     this.updateModelColors(color);
-    this.sendColorToLamp(color,
+    this.sendColorToLamp(
+      color,
       () => console.log("Updated with: " + JSON.stringify(color)),
-      () => console.log("Error updating"));
-    if(!this.power) {
-      this.power = true
-      this.updatePower(true)
-    }      
+      () => console.log("Error updating")
+    );
+    if (!this.power) {
+      this.power = true;
+      this.updateLampPower(true);
+    }
   }
 
   setColor(event) {
-    this.updateLampColor({R: this.red, G: this.green, B:this.blue, W: this.white});
+    this.updateLampColor({
+      R: this.red,
+      G: this.green,
+      B: this.blue,
+      W: this.white,
+    });
   }
 
-  updatePower(event) {
-    this.ble.onOff(this.power);
+  updateLampPower(power) {
+    console.log(`updating power ${JSON.stringify(power)}`)
+    this.ble.onOff(power);
   }
-  
-  ionViewDidLoad(){
-    console.log(`picker tab loaded ${Date.now()}`)
-    setTimeout(
-      ()=> {this.ble.getColorFromDevice(
-        (color) => { this.updateModelColors(color)}
-    )}, 700);
+
+  ionViewDidLoad() {
+    setTimeout(() => {
+      this.ble.getColorFromDevice((color) => {
+        this.updateModelColors(color);
+      });
+    }, 700);
   }
 }

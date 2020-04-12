@@ -23,7 +23,6 @@ export class ConnectionPage {
   }
 
   ionViewDidEnter(){
-    console.log('ionViewDidEnter');
     this.scan();
   }
 
@@ -45,7 +44,6 @@ export class ConnectionPage {
   }
 
   deviceSelected(device) {
-    console.log("connection page: selected device")
     let connectingLoader = this.loadingCtrl.create({
       content: 'Connecting to the lamp'
     });

@@ -4,14 +4,14 @@ const AnimationPlayer = require("./animation-player.js");
 
 const strip = new Strip();
 const lampName = "Heks";
-let lampState = {
+const lampState = {
   r: 0,
   g: 0,
   b: 0,
   w: 100,
   pattern: 1,
   speed: 1,
-  power: 0,
+  power: 1,
 };
 
 console.log(JSON.stringify(lampState));
@@ -28,10 +28,10 @@ process.on("SIGINT", function () {
 
 function loadState() {
   const r = lampState.r,
-    g = lampState.g,
-    b = lampState.b,
-    w = lampState.w,
-    switchState = lampState.power;
+        g = lampState.g,
+        b = lampState.b,
+        w = lampState.w,
+        switchState = lampState.power;
   if (switchState == 1) {
     for (var i = 0; i < strip.length; i++)
       strip.setPixel(i, rgbw2Int(r, g, b, w));
@@ -42,9 +42,6 @@ function loadState() {
 }
 
 loadState();
-
-// Bluetooth service/characteristic things
-// What's the relationship between the services and characteristics?
 
 var serviceSettings = {
   service_id: "ccc0",
@@ -65,6 +62,18 @@ var colorSettings = {
   service_id: "ccc1",
   characteristic_id: "2901",
 };
+
+function saveColor(r,g,b,w) {
+  lampState.r = r;
+  lampState.g = g;
+  lampState.b = b;
+  lampState.w = w;
+}
+
+function savePattern(pattern) {
+  lampState.pattern = pattern.number;
+  lampState.speed = pattern.speed;
+}
 
 class SwitchCharacteristic extends bleno.Characteristic {
   constructor(uuid, name) {
@@ -144,14 +153,11 @@ class ColorCharacteristic extends bleno.Characteristic {
       console.log(`${this.name} is ${this.argument}`);
       for (var i = 0; i < strip.length; i++) {
         const r = data[0],
-          g = data[1],
-          b = data[2],
-          w = data[3];
+              g = data[1],
+              b = data[2],
+              w = data[3];
         strip.setPixel(i, rgbw2Int(r, g, b, w));
-        lampState.r = r;
-        lampState.g = g;
-        lampState.b = b;
-        lampState.w = w;
+        saveColor(r,g,b,w)
       }
       strip.render();
       callback(this.RESULT_SUCCESS);
@@ -209,8 +215,7 @@ class PatternCharacteristic extends bleno.Characteristic {
         speed: data[1],
       };
 
-      lampState.number = pattern.number;
-      lampState.speed = pattern.speed;
+      savePattern(pattern)
 
       animationPlayer.play(pattern);
 
@@ -222,7 +227,7 @@ class PatternCharacteristic extends bleno.Characteristic {
   }
   onReadRequest(offset, callback) {
     try {
-      let data = new Buffer([lampState.number, lampState.speed]);
+      let data = new Buffer([lampState.pattern, lampState.speed]);
       callback(this.RESULT_SUCCESS, data);
     } catch (err) {
       console.error(err);

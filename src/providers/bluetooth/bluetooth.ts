@@ -60,6 +60,23 @@ export class BluetoothProvider {
         (err) => {console.log(`error getting color: ${err}`)})
   }
 
+  getPatternFromDevice(updateUIcallback){
+    console.log(`getting pattern from device`)
+    this.ble
+      .read(this.peripheral.id, NEOPIXEL_SERVICE, PATTERN)
+      .then(
+        data => {
+          const patternData = this.bluetoothDataToJson(data);
+          console.log(`got ${JSON.stringify(patternData)}`)
+          console.log(`got ${patternData}`)
+          updateUIcallback({
+            number: patternData[0].toString(), 
+            speed: patternData[1], 
+          })
+        }, 
+        (err) => {console.log(`error getting color: ${err}`)})
+  }
+
   disconnectDevice(){
     console.log('disconnecting Bluetooth');
     this.ble.disconnect(this.peripheral.id).then(
