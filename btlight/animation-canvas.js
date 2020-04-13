@@ -39,14 +39,6 @@ const ctx = canvas.getContext('2d')
 let pastel = 10;
 // animation tests
 let frame = 0;
-let gradient;
-// perlin animation vars
-// animation is a port of https://processing.org/examples/noise3d.html
-let increment = 0.01;
-// The noise function's 3rd argument, a global variable that increments once per cycle
-let zoff = 0.0;
-// We will increment zoff differently than xoff and yoff
-let zincrement = 0.02; 
 // ripple 
 // ripple is a port of https://github.com/CodingTrain/website/blob/master/CodingChallenges/CC_102_WaterRipples/Processing/CC_102_WaterRipples/CC_102_WaterRipples.pde
 let rows      = LUT_H;
@@ -63,54 +55,15 @@ function clearCanvas() {
   ctx.fillRect(0,0,LUT_W,LUT_H);
 }
 
-function updatePerlin(speed = 1) {
-  // get pixels
-  let ctxImageData = ctx.getImageData(0,0,LUT_W,LUT_H);
-  let ctxData = ctxImageData.data;
-  
-  // Optional: adjust noise detail here
-  // speed means faster and more complex noise pattern
-  p5.noiseDetail(2 + speed,.61803398875);
-    
-  let xoff = 0.0; // Start xoff at 0
-    
-  // For every x,y coordinate in a 2D space, calculate a noise value and produce a brightness value
-  for (let x = 0; x < LUT_W; x++) {
-    xoff += increment;   // Increment xoff 
-    let yoff = 0.0;   // For every xoff, start yoff at 0
-    for (let y = 0; y < LUT_H; y++) {
-      yoff += increment; // Increment yoff
-      
-      // Calculate noise and scale by 255
-      let bright = p5.noise(xoff,yoff,zoff)*255;
+const speed_to_velocity = (speed) => {return 1 + (speed/300) - 0.05};
 
-      // Try using this line instead
-      //float bright = random(0,255);
-      let index = (x + y * LUT_W) * 4;// RGBA
-      let gray  = Math.floor(bright);
-      // Set each pixel onscreen to a grayscale value
-      ctxData[index+0] = gray;//R
-      ctxData[index+1] = gray;//G
-      ctxData[index+2] = gray;//B
-      ctxData[index+3] = pastel;//W
-      
-    }
-  }
-  
-  zoff += zincrement; // Increment zoff
-  // set pixels
-  ctx.putImageData(ctxImageData,0,0);
-}
-
-const speed_to_velocity = (speed) => {return 1 + (speed/100) - 0.05};
-
-function updateRipple(frame, ripple_speed = 1, pastel = 30) {
+function updateRipple(frame, ripple_speed = 1, pastel = 30, start, color = 'white') {
   const dampening = 0.99;
-  const s_to_v = (speed_to_velocity(ripple_speed/3));
-  
-  if(frame % 60 == 0){
-    console.log(`updated frame: ${frame} - ${s_to_v}`)
-    previous[7][8] =500;
+  const s_to_v = (speed_to_velocity(ripple_speed));
+
+  if(frame % 60 === 0){
+    // console.log(`updated frame: ${frame} - ${s_to_v}`)
+    previous[start.x][start.y] =500;
   }
   
   let ctxImageData = ctx.getImageData(0,0,LUT_W,LUT_H);
@@ -132,11 +85,26 @@ function updateRipple(frame, ripple_speed = 1, pastel = 30) {
         let index = (i + j * LUT_W) * 4;// RGBA
         let gray  = Math.floor(current[i][j]);
 
+      if (color === 'blue') {
         ctxData[index+0] = gray;
         ctxData[index+1] = gray;
-        ctxData[index+2] = gray;
-        ctxData[index+3] = pastel;
+        ctxData[index+2] = pastel;
+        ctxData[index+3] = gray;
       }
+      if (color === 'red') {
+        ctxData[index+0] = pastel;
+        ctxData[index+1] = gray;
+        ctxData[index+2] = gray;
+        ctxData[index+3] = gray;
+      }
+
+      if (color === 'green') {
+        ctxData[index+0] = gray;
+        ctxData[index+1] = pastel;
+        ctxData[index+2] = gray;
+        ctxData[index+3] = gray;
+      }
+    }
   }
   // swap buffers
   let temp = previous;
@@ -153,13 +121,13 @@ function array2D(cols,rows){
   }
   return result;
 }
-function updateCircle(speed = 1){
+function updateCircle(speed = 1, circleColor, start){
   const circle_speed = (Math.sin(frame * 0.01 * speed) + 1.0);
-  ctx.strokeStyle = '#000099';
+  ctx.strokeStyle = circleColor;
+  ctx.strokeWeight=(2);
   ctx.beginPath();
   const r = circle_speed * 4;
-  ctx.ellipse(LUT_W * 0.5, LUT_H * 0.5, r * HEX_HEIGHT_RATIO, r, 0, 0, 2 * Math.PI);
-  //ctx.ellipse(LUT_W * 0.5, LUT_H * 0.5, r, r, 0, 0, 2 * Math.PI);
+  ctx.ellipse(start.x, start.y, r * HEX_HEIGHT_RATIO, r, 0, 0, 2 * Math.PI);
   ctx.stroke();
 }
 // main render loop for canvas animations
@@ -172,19 +140,46 @@ function updateCanvas(pattern) {
   clearCanvas();
   // circle test
 
-  if(animation_number == 2) {
-   updateCircle(speed);
+  // 2 is blue, 4 is red 5 is green 7 is pink 8 is rainbow
+  if (
+    animation_number === 2 ||
+    animation_number === 4 ||
+    animation_number === 5 ||
+    animation_number === 7
+  ) {
+    let circleColor = '#0000EE';
+    switch(animation_number) {
+      case 4:
+        circleColor = '#EE0000';
+        break;
+      case 5:
+        circleColor = '#00EE00';
+        break;
+      case 7: 
+        circleColor = '#EE0099';
+        break;
+    }
+    const start = {x: (LUT_W * 0.5), y: (LUT_H * 0.5)};
+    updateCircle(speed, circleColor, start);
   }
 
   // ripple
-  if(animation_number == 3){
-    updateRipple(frame, speed);
+  if (animation_number === 3 || animation_number === 8 || animation_number === 9) {
+    let start = { x: 12, y: 2 };
+    let color = 'blue'
+    let colorIntensity = 100
+    if (animation_number === 8) {
+      start = {x: 1, y: 1};
+      color = 'red'
+      colorIntensity = 70
+    }
+    if (animation_number === 9) {
+      start = {x: 1, y: 10};
+      color = 'green'
+      colorIntensity = 90
+    }
+    updateRipple(frame, speed, colorIntensity, start, color);
   }
-
-  // // perlin
-  // if(animation_number == 4){
-  //   updatePerlin(frame);
-  // }
 }
 
 // pull canvas pixels and update strip
@@ -218,5 +213,4 @@ exports.updateCanvasAnimations =  (strip, pattern) => {
   }
   , 1000/30);
 }
-
 
