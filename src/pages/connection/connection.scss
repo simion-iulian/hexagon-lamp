@@ -19,4 +19,8 @@ page-connection {
     .device-name-bg{
         color: color($colors, sun-yellow);
     }
+
+    .item-md.activated{
+        background-color: rgba(0, 0, 0, 0.2);
+    }
 }

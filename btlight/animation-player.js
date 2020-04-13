@@ -18,6 +18,9 @@ class AnimationPlayer {
             case 1:
                 this.rainbow(pattern.speed);
                 break;
+            case 6:
+                this.rainbow(pattern.speed, 80);
+                break;
             default: 
                 this.updateCanvasAnimations(this.strip, pattern);
                 break;
