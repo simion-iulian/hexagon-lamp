@@ -1,6 +1,6 @@
 page-picker-tab {
     .item {
-      min-height: 0.5rem; /* <- this can be whatever you need */
+      min-height: 0.3rem; /* <- this can be whatever you need */
     }
   
     .below-connection-bar {
@@ -14,7 +14,7 @@ page-picker-tab {
 
     .red-slider {
       background: color($colors, header-bg);
-      height: 8.33%;
+      height: 7.5%;
     }
 
     .red-slider .range-bar {
@@ -23,7 +23,7 @@ page-picker-tab {
 
     .green-slider{
       background: color($colors, header-bg);
-      height: 8.33%;
+      height: 7.5%;
     }
   
     .green-slider .range-bar{
@@ -32,7 +32,7 @@ page-picker-tab {
   
     .blue-slider{
       background: color($colors, header-bg);
-      height: 8.33%;
+      height: 7.5%;
     }
   
     .blue-slider .range-bar{
@@ -40,11 +40,11 @@ page-picker-tab {
     }
     .white-slider{
       background: color($colors, header-bg);
-      height: 8.33%;
+      height: 7.5%;
     }
     
     .power{
-      height: 8.33%;
+      height: 7.5%;
       background: #111111;
     }
   }
