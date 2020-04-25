@@ -3,7 +3,7 @@ const Strip = require('./strip-controller');
 const AnimationPlayer = require('./animation-player.js');
 
 const strip = new Strip();
-const lampName = "Heks 2";
+const lampName = "Heks";
 let lampState = {
   "r":0,
   "g":0,
@@ -142,7 +142,7 @@ class ColorCharacteristic extends bleno.Characteristic {
       console.log(`${this.name} is ${this.argument}`);
       for(var i = 0; i<strip.length;i++) {
         const r = data[0], g = data[1], b = data[2], w = data[3];
-        strip.setPixel(i, rgbw2Int(r,g,b,w));
+        strip.setPixel(i, Strip.convertRGBW2Int(r,g,b,w));
         lampState.r = r; lampState.g = g; lampState.b = b; lampState.w = w;
       }
       strip.render();

@@ -6,6 +6,8 @@ import { BLE } from '@ionic-native/ble';
 import { BluetoothProvider } from '../providers/bluetooth/bluetooth'
 
 import { ConnectionPage } from '../pages/connection/connection';
+import { TabsPage } from '../pages/tabs/tabs';
+
 @Component({
   templateUrl: 'app.html'
 })

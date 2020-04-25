@@ -1,6 +1,4 @@
 const { createCanvas } = require('canvas')
-// copied just perlin noise from p5.js browser version and added minor tweaks for node (no Window required)
-const p5               = require('./noise.js')
 // https://en.wikipedia.org/wiki/Hexagon#Parameters
 // "a hexagon with a long diagonal of 1.0000000 will have a distance of 0.8660254 between parallel sides."
 // this is handy to scale content on Y so it appears 1:1 on the hexagon, notice the hexagon in the LUT if you squint your eyes is not a 1:1 rectangle
@@ -32,7 +30,7 @@ const LUT = [
 
 const LUT_LENGTH = LUT.length;
 // the canvas to draw into
-const canvas = createCanvas(LUT_W, LUT_H)
+const canvas = createCanvas(LUT_W+1, LUT_H+1)
 // the canvas context
 const ctx = canvas.getContext('2d')
 // to be passed by AnimationPlayer/etc.
@@ -41,12 +39,20 @@ let pastel = 10;
 let frame = 0;
 // ripple 
 // ripple is a port of https://github.com/CodingTrain/website/blob/master/CodingChallenges/CC_102_WaterRipples/Processing/CC_102_WaterRipples/CC_102_WaterRipples.pde
-let rows      = LUT_H;
-let cols    = LUT_W;
-let current   = array2D(LUT_W,LUT_H);
-let previous  = array2D(LUT_W,LUT_H);
 
-// setup keypress to test animations: Press ENTER from SSH to iterated through animations
+// makes a 2D array of zeros
+function array2D(cols,rows) {
+  let result = new Array(rows);
+  for (let y = 0; y < rows; y++) {
+    result[y] = new Array(cols).fill(0);
+  }
+  return result;
+}
+
+let rows  = LUT_H + 1;
+let cols  = LUT_W + 3;
+let current  = array2D(cols,rows);
+let previous = array2D(cols,rows);
 
 function clearCanvas() {
   // clear frame with black pixels
@@ -55,23 +61,22 @@ function clearCanvas() {
   ctx.fillRect(0,0,LUT_W,LUT_H);
 }
 
-const speed_to_velocity = (speed) => {return 1 + (speed/300) - 0.05};
 
 function updateRipple(frame, ripple_speed = 1, pastel = 30, start, color = 'white') {
+  const speed_to_velocity = (speed) => {return 1 + (speed/300) - 0.05};
   const dampening = 0.99;
   const s_to_v = (speed_to_velocity(ripple_speed));
 
   if(frame % 60 === 0){
     // console.log(`updated frame: ${frame} - ${s_to_v}`)
-    previous[start.x][start.y] =500;
+    previous[start.x][start.y] = 500;
   }
   
-  let ctxImageData = ctx.getImageData(0,0,LUT_W,LUT_H);
+  let ctxImageData = ctx.getImageData(0,0,LUT_W+1,LUT_H+1);
   let ctxData = ctxImageData.data;
   
-  for (let i = 1; i < rows-1; i++) {
-    for (let j = 1; j < cols-1; j++) {
-
+  for (let i = 1; i < rows - 1; i++) {
+    for (let j = 1; j < cols - 1; j++) {
         const smoothed = (previous[i-1][j] + 
                           previous[i+1][j] + 
                           previous[i][j-1] + 
@@ -82,7 +87,7 @@ function updateRipple(frame, ripple_speed = 1, pastel = 30, start, color = 'whit
         current[i][j] = smoothed*2 + velocity;
         current[i][j] = current[i][j] * dampening;
 
-        let index = (i + j * LUT_W) * 4;// RGBA
+        let index = (i + j * (LUT_W + 1)) * 4;// RGBA
         let gray  = Math.floor(current[i][j]);
 
       if (color === 'blue') {
@@ -111,22 +116,15 @@ function updateRipple(frame, ripple_speed = 1, pastel = 30, start, color = 'whit
       previous = current;
       current = temp;
 
-  ctx.putImageData(ctxImageData,0,0);
+  ctx.putImageData(ctxImageData,0,-1);
 }
-// makes a 2D array of zeros
-function array2D(cols,rows){
-  let result = new Array(rows);
-  for (var y = 0; y < rows; y++) {
-    result[y] = new Array(cols).fill(0);
-  }
-  return result;
-}
+
 function updateCircle(speed = 1, circleColor, start){
   const circle_speed = (Math.sin(frame * 0.01 * speed) + 1.0);
   ctx.strokeStyle = circleColor;
   ctx.strokeWeight=(2);
   ctx.beginPath();
-  const r = circle_speed * 4;
+  const r = circle_speconvertRGBW2Inted * 4;
   ctx.ellipse(start.x, start.y, r * HEX_HEIGHT_RATIO, r, 0, 0, 2 * Math.PI);
   ctx.stroke();
 }
@@ -164,7 +162,9 @@ function updateCanvas(pattern) {
   }
 
   // ripple
-  if (animation_number === 3 || animation_number === 8 || animation_number === 9) {
+  if (animation_number === 3 || 
+      animation_number === 8 || 
+      animation_number === 9) {
     let start = { x: 12, y: 2 };
     let color = 'blue'
     let colorIntensity = 100
