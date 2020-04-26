@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.simioniulian.duuu" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.simioniulian.duuu" version="0.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Duuu</name>
-    <description>An app to control the Heks lamp</description>
+    <description>An app that controles a bluetooth light lamp</description>
     <author href="http://github.com/simion-iulian">Simion Iulian Belea</author>
     <content src="index.html" />
     <access origin="*" />
