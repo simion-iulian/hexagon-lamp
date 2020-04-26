@@ -30,14 +30,16 @@ const LUT = [
 
 const LUT_LENGTH = LUT.length;
 // the canvas to draw into
-const canvas = createCanvas(LUT_W+1, LUT_H+1)
+const canvas = createCanvas(LUT_W, LUT_H)
 // the canvas context
 const ctx = canvas.getContext('2d')
-// to be passed by AnimationPlayer/etc.
-let pastel = 10;
-// animation tests
-let frame = 0;
+
 // ripple 
+// Ripple needs a bigger context to cover the whole hexagon
+let rows  = LUT_H + 1;
+let cols  = LUT_W + 3;
+const rippleCanvas = createCanvas(LUT_W+1, LUT_H+1)
+const rippleCtx= rippleCanvas.getContext('2d');
 // ripple is a port of https://github.com/CodingTrain/website/blob/master/CodingChallenges/CC_102_WaterRipples/Processing/CC_102_WaterRipples/CC_102_WaterRipples.pde
 
 // makes a 2D array of zeros
@@ -49,10 +51,15 @@ function array2D(cols,rows) {
   return result;
 }
 
-let rows  = LUT_H + 1;
-let cols  = LUT_W + 3;
 let current  = array2D(cols,rows);
 let previous = array2D(cols,rows);
+
+// to be passed by AnimationPlayer/etc.
+let pastel = 10;
+// animation tests
+let frame = 0;
+
+
 
 function clearCanvas() {
   // clear frame with black pixels
@@ -62,7 +69,7 @@ function clearCanvas() {
 }
 
 
-function updateRipple(frame, ripple_speed = 1, pastel = 30, start, color = 'white') {
+function updateRipple(frame, ripple_speed = 3, pastel = 30, start, color = 'white') {
   const speed_to_velocity = (speed) => {return 1 + (speed/300) - 0.05};
   const dampening = 0.99;
   const s_to_v = (speed_to_velocity(ripple_speed));
@@ -72,7 +79,7 @@ function updateRipple(frame, ripple_speed = 1, pastel = 30, start, color = 'whit
     previous[start.x][start.y] = 500;
   }
   
-  let ctxImageData = ctx.getImageData(0,0,LUT_W+1,LUT_H+1);
+  let ctxImageData = rippleCtx.getImageData(0,0,LUT_W+1,LUT_H+1);
   let ctxData = ctxImageData.data;
   
   for (let i = 1; i < rows - 1; i++) {
@@ -102,7 +109,6 @@ function updateRipple(frame, ripple_speed = 1, pastel = 30, start, color = 'whit
         ctxData[index+2] = gray;
         ctxData[index+3] = gray;
       }
-
       if (color === 'green') {
         ctxData[index+0] = gray;
         ctxData[index+1] = pastel;
@@ -116,7 +122,8 @@ function updateRipple(frame, ripple_speed = 1, pastel = 30, start, color = 'whit
       previous = current;
       current = temp;
 
-  ctx.putImageData(ctxImageData,0,-1);
+  rippleCtx.putImageData(ctxImageData,0,0);
+  ctx.putImageData(ctxImageData,-1,-1);
 }
 
 function updateCircle(speed = 1, circleColor, start){
@@ -124,7 +131,7 @@ function updateCircle(speed = 1, circleColor, start){
   ctx.strokeStyle = circleColor;
   ctx.strokeWeight=(2);
   ctx.beginPath();
-  const r = circle_speconvertRGBW2Inted * 4;
+  const r = circle_speed * 4;
   ctx.ellipse(start.x, start.y, r * HEX_HEIGHT_RATIO, r, 0, 0, 2 * Math.PI);
   ctx.stroke();
 }
@@ -178,7 +185,7 @@ function updateCanvas(pattern) {
       color = 'green'
       colorIntensity = 90
     }
-    updateRipple(frame, speed, colorIntensity, start, color);
+    updateRipple(frame, speed + 2, colorIntensity, start, color);
   }
 }
 
