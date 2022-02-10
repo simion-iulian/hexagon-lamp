@@ -39,7 +39,7 @@
     "ionic-plugin-keyboard": "^2.2.1",
     "ionicons": "3.0.0",
     "ngx-color": "^4.1.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^7.0.0",
     "rxjs": "^5.5.12",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.12"
